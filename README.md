@@ -11,7 +11,7 @@ Oodebe is an asynchronous IO based REST API framework built on node.js.
 
 ##How to Install
 
-* Set The Configuation Variable in conf.js
+* Set Configuation Variables in conf.js
 * Download the Zip from Git Repo and Extract it. 
    
 
