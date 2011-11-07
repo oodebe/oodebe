@@ -30,4 +30,14 @@ Oodebe is an asynchronous IO based REST API framework built on node.js.
 * [UUID Module of Node] (https://github.com/broofa/node-uuid)
 * [Cluster Module of Node] (https://github.com/LearnBoost/cluster)
 
+## Running Sample Scripts
+
+After Installation you will see the sample Scripts of Lily, Neo4j, Node.js and Solr . For running the sample scripts 
+Set The url of variouse running REST Server in conf.js.
+
+
+
+
+
+
 
