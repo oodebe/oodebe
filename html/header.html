@@ -1,0 +1,32 @@
+<div class="topbar">
+  <div class="topbar-inner">
+	<div class="container">
+	  <h3><a href="/">Oodebe Utilities</a></h3>
+
+	  <ul class="nav">
+		<li><a href="/">Script Builder</a></li>
+		<li><a href="admin.html?page=http://oodebe.com:8983/solr/admin">SOLR Admin</a></li>
+		<li><a href="admin.html?page=http://oodebe.com:7474">Neo4j Admin</a></li>
+		</li>
+	  </ul>
+	  
+	  <ul class="nav secondary-nav">
+		<li><a id="aboutlink" href="#">About</a></li>
+	  </ul>
+	</div>
+  </div>
+</div>
+<div style="display:none" id="aboutbox" class="modal">
+	<div class="modal-header"><h3>Oodebe Utils</h3></div>
+	<div class="modal-body">
+		Oodebe is an asynchronous IO based REST API framework built on <a href="http://nodejs.org">node.js</a>. 
+		<ol>
+			<li>Provides facilities to develop, test and deploy a REST API server</li>
+			<li>Each API call can be constructed as a script</li>
+			<li>Scripts can be executed as either native node.js scripts or one of the supported plugins</li>
+			<li>Plugins allow scripts to access various REST servers such as Neo4j, SOLR, and Lily using their REST interface</li>
+			<li>Additional plugins can be written in the form of simple JSON configuration files</li>
+		</ol>
+	</div>
+	<div class="modal-footer"><a href="#" id="aboutclose" class="btn primary">ok</a></div>
+</div>
