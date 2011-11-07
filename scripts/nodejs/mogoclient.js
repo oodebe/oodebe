@@ -1,0 +1,1 @@
+{"filename":"mogoclient.js","description":"Using Mongo Client","script":"mongodb.collection('kb').find().limit(1).toArray(function(err, posts){\n console.log(posts);\n    // do something\n\t\treturn _callback({\n\t'result': 'success',\n\t'message': posts\n});\n});","scripttype":"nodejs","listorder":"","paraminput":""}

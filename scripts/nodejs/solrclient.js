@@ -1,0 +1,1 @@
+{"filename":"solrclient.js","description":"Using Solr Client","script":"//for commit solr \nclient.commit();\n_callback({\n\t'result': 'success',\n\t'message': 'commited to solr '\n});","scripttype":"nodejs","listorder":"","paraminput":""}

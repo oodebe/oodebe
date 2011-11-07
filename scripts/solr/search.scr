@@ -1,0 +1,1 @@
+{"filename":"search.scr","description":"Search all objects with specified query","script":"q=<%=query%>&wt=json&<%=extraParams%>","scripttype":"solr","listorder":"","paraminput":"{'query':\"*:*\",\n'extraParams':'rows=30'}"}
