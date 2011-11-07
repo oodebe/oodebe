@@ -21,7 +21,7 @@ Oodebe is an asynchronous IO based REST API framework built on node.js.
     
 ## Requirements
 
-* Node 0.4.12
+* [Node 0.4.12] (http://nodejs.org/)
 * [Async Module of Node] (https://github.com/caolan/async)
 * [Rest Module of Node] (https://github.com/danwrong/restler)
 * [Mongo Module of Node] (https://github.com/guileen/node-mongoskin)
