@@ -9,4 +9,15 @@ Oodebe is an asynchronous IO based REST API framework built on node.js.
 * Plugins allow scripts to access various REST servers such as Neo4j, SOLR, and Lily using their REST interface
 * Additional plugins can be written in the form of simple JSON configuration files
 
-#How to Install
+##How to Install
+
+ Download the Zip from Git Repo and Extract it. 
+   
+   
+    node index.js
+    
+## Requirements
+
+* Node 0.4.12
+* [Async Module of Node] (https://github.com/caolan/async)
+
