@@ -8,13 +8,18 @@ var sys = require("sys"),
 	rest = require('restler'),
 	tmpl = require('./tmpl'),
 	mongo = require('mongoskin'),
+	connect = require('connect'),
 	exec  = require('child_process').exec,
 	Log = require('log'),
 	uuid = require('node-uuid'),
-	solr = require('node-solr'),
-	url = require("url"),
-	cluster = require('cluster');
-
+	url = require("url");
+var users={
+	'rahul':{
+		username:'rahul',
+		password:'123',
+		auth:false
+	}
+};
 // files with saved as scripttype/filename , this is to save file operation
 var filescache={}; //hash for saving the scirpts in file cache 
 //process.cwd() not work with upstart so changed to __dirname
@@ -27,94 +32,101 @@ config=eval(config);
 console.log("Creating client connections...");
 var mongodb = mongo.db(config.mongodbhost);
 console.log("... mongo client connected to "+config.mongodbhost);
-var client = solr.createClient(config.solrhost,config.solrport);
-console.log("... solr client connected to "+config.solrhost+":"+config.solrport);
+// var client = solr.createClient(config.solrhost,config.solrport);
+// console.log("... solr client connected to "+config.solrhost+":"+config.solrport);
 
-var server=http.createServer(function(request, responsehttp) {
+var query;
+
+var oodebe=function(request, responsehttp, next) {
 	if (request.method == 'POST') {
 		var body = '';
 		request.on('data', function (data) {
 			body += data;
-		});
+		}); 
 		request.on('end', function () {
-			var POST = qs.parse(body);
-			processquery(POST, request, responsehttp);
+			query = qs.parse(body);
+			processquery(query, request, responsehttp);
 		});
 	} else {
 		var url_parts = url.parse(request.url, true);
-		var query = url_parts.query;
-		console.log(query);
+		query = url_parts.query;
 		processquery(query, request, responsehttp);
 	}
-}).listen(config.serverport);
-
+};
+var server=connect(
+	connect.cookieParser(),
+	connect.session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}),
+	connect.favicon(),
+	oodebe
+);
+server.listen(80);
 sys.puts('server started at '+config.serverport);
-/*execScript({"filename": "nodejs/getbatches.scr",}, function (res) {
-    if(!res){
-	console.log('No response found while executing getbatches.scr');
-    }else{
-	console.log('Executed getbatches.scr '+JSON.stringify(res));
-    }
-});
+/*
+  execScript({"filename": "nodejs/getbatches.scr",}, function (res) {
+    if (!res) {
+	    console.log('No response found while executing getbatches.scr');
+    } else {
+	    console.log('Executed getbatches.scr '+JSON.stringify(res));
+    } 
+	});
 */
-
 var results=[];
 getStatusFiles(__dirname+'/batches', function() {
-    var len = results.length;
-    if(len < 1) {
-	console.log("no incomplete batch found");
+	var len = results.length;
+	if(len < 1) {
+		console.log("no incomplete batch found");
+		return;
+	}
+	console.log("found "+len+" incomplete batches. Starting to execute each file.");
+	console.log(results);
+	for(var i=0;i<len;i++){
+		execScript({"filename": "nodejs/restartbatch.scr",paraminput:{batchfile:results[i]}}, function (res) {
+			if(!res){
+				console.log('No response found while executing batchfile ');
+			} else {
+				console.log('Executing batchfile.Result recd: '+JSON.stringify(res));
+			}
+		});
+	}
 	return;
-    }
-    console.log("found "+len+" incomplete batches. Starting to execute each file.");
-    console.log(results);
-    for(var i=0;i<len;i++){
-	execScript({"filename": "nodejs/restartbatch.scr",paraminput:{batchfile:results[i]}}, function (res) {
-	    if(!res){
-		console.log('No response found while executing batchfile ');
-	    }else{
-		console.log('Executing batchfile.Result recd: '+JSON.stringify(res));
-	    }
-	});
-    }
-    return;
 });
 
 function getStatusFiles(file, callback) {
-    fs.stat(file, function(err, stat) {
-	if (!stat) {
-	    return;
-	}
-	if (stat.isDirectory()) {
+	fs.stat(file, function(err, stat) {
+		if (!stat) {
+			return;
+		}
+		if (stat.isDirectory()) {
 	    fs.readdir(file, function(err, files) {
-		var tasks=[];
-		for(var i=0;i<files.length;i++) {
-		    (function(index) {
-			tasks.push(function(mycallback) {
-			    getStatusFiles(path.join(file, files[index]), function() {
-				mycallback();
-			    });
+			var tasks=[];
+			for(var i=0;i<files.length;i++) {
+				(function(index) {
+					tasks.push(function(mycallback) {
+						getStatusFiles(path.join(file, files[index]), function() {
+							mycallback();
+						});
+					});
+				})(i);
+			}
+			async.series(tasks, function() {
+				if (callback) {
+					callback();
+				}
 			});
-		    })(i);
-		}
-		async.series(tasks, function() {
-		    if (callback) {
-			callback();
-		    }
 		});
-	    });
 	} else { 
-	    try {
-		var ext = file.substr(file.lastIndexOf('.') + 1);
-		if (ext=='status') {
-		    console.log(file);
-		    results.push(file); 
+		try {
+			var ext = file.substr(file.lastIndexOf('.') + 1);
+			if (ext=='status') {
+				console.log(file);
+				results.push(file); 
+			}
+			callback();
+		} catch(e) {
+			console.log(e);
 		}
-		callback();
-	    } catch(e) {
-		console.log(e);
-	    }
 	}
-    });
+	});
 }
 
 
@@ -126,7 +138,7 @@ function processquery(query, request, responsehttp){
 	if (!query.command) {
 		fileprocess(request, responsehttp);
 	}
-	responsehttp.writeHead(200, {"Content-Type": "application/json"});
+	// responsehttp.writeHead(200, {"Content-Type": "application/json"});
 	switch(query.command) {
 	case 'test':
 		testscript(query, returnResult);
@@ -164,9 +176,34 @@ function processquery(query, request, responsehttp){
 	case 'sort':
 		sortScripts(query, returnResult);	
 		break;
+	case 'login':
+			authuser(request, query, returnResult);
+			break;
+	case 'logout':
+		logout(request, query, responsehttp);	
+		break;
+	case 'newuser':
+		newuser(query, returnResult);	
+		break;	
 	}
 }
 
+function login(request, query, responsehttp) {
+	if (users[query.username] && query.username==users[query.username].username && query.password==users[query.username].password) {
+		request.session.auth = true;
+		var data = {result:'success','message':'login successful'};
+		responsehttp.end(JSON.stringify(data));
+	} else {
+		var data = {result:'error','message':'login incorrect'};
+		responsehttp.end(JSON.stringify(data));
+	}
+}
+
+function logout(request, query, responsehttp) {
+	request.session.destroy();
+	var data = {result:'success','message':'logout successful'};
+	responsehttp.end(JSON.stringify(data));
+}
 
 function writeLog(file, string,flag,mode,skipDate) {
     try{
@@ -290,13 +327,13 @@ function loadScript(request, callback){
 	});
 }
 
-function execScript(request, callback) {
+function execTheScript(request, callback) {
 	process.nextTick(function(){
 		execTheScript(request, callback);
 	});
 }
 // execute a script
-function execTheScript(request, callback) {
+function execScript(request, callback) {
 	// create a dummy callback if none is provided
 	if (!callback) {callback=function(result) {return result;};}
 	// check if any input paramters are passed, and add them in request.inputParams
@@ -397,13 +434,13 @@ function execTheScript(request, callback) {
 function parseInputParamters(dataparaminput) {
 	var paraminput={};
 	
-	if(typeof(dataparaminput)=='object') {
+	if (typeof(dataparaminput)=='object') {
 		return dataparaminput;
 	}	
 	// first try to eval it as json
 	try {
 		paraminput = eval('('+dataparaminput+')');
-		if(typeof(paraminput)=='object') {
+		if (typeof(paraminput)=='object') {
 			return paraminput;
 		}	
 	} catch(e) {
@@ -606,9 +643,15 @@ function getScripts(file,results,callback) {
 	});
 }
 
-function fileprocess(request, responsehttp){
+function fileprocess(request, responsehttp) {
 	var uri = url.parse(request.url).pathname;
-	if (uri=='' || uri == '/') {uri='html/index.html';}
+	var sess = request.session;
+	var age=sess.cookie.maxAge / 1000;
+	if (age>0 && sess.auth==true) {
+		if (uri=='' || uri == '/') {uri='html/index.html';}
+	} else {
+		if (uri=='' || uri == '/') {uri='html/login.html';}
+	}
 	var filename = path.join(basedir, uri);
 	path.exists(filename, function(exists) {  
 		if(!exists) {
@@ -667,3 +710,72 @@ function sortScripts(query, callback){
 }
 
 
+
+function newuser(user, callback) {
+	delete user.command;
+	fs.readFile(path.join(__dirname, 'user.db'), 'utf8', function(err, data) {
+		try { 
+			if (err) {
+				throw err;
+			} 
+			console.log('file is read ');
+			if (data!=='') {
+				data=eval('('+data+')');
+			}
+			
+			if (typeof(data) === 'object') {
+				if (data[user.username]) {
+					return callback({result:'error','message':'user already exist'});
+				} else {
+					data[user.username]=user;
+				}
+			} else {
+				data={};
+				data[user.username]=user;
+			} 
+			fs.writeFile(path.join(__dirname, 'user.db'), JSON.stringify(data), function(err) {
+				try {
+					if (err) {
+						throw err;
+					} 
+					return callback({result:'success','message':'new user saved '});
+				} catch(e) {
+					return callback({result:'error','message':e});
+				}
+			});
+		} catch(e) {
+			return callback({result:'error','message':e});
+		}
+	});
+}
+
+function authuser(request, user, callback) {
+	fs.readFile(path.join(__dirname, 'user.db'), 'utf8', function(err, data) {
+	
+			if (err) {
+				throw err;
+			}
+			console.log('file is read ');
+			if (data!=='') {
+				// parse the file contents
+				data=eval('('+data+')');
+			}
+			
+			if (typeof(data) === 'object') {
+				if (!data[user.username]) {
+					return callback({result:'error','message':'user not exist'});
+				} else if (data[user.username].password!=user.password) {
+					return callback({result:'error','message':'password not matched'});
+				} else {
+					request.session.auth = true;
+					return callback({result:'success','message':'auth successul'});
+				}
+			} else {
+				return callback({result:'error','message':'no user exist'});
+			}
+				try { 
+		} catch(e) {
+			return callback({result:'error','message':e});
+		}
+	});
+}
