@@ -49,10 +49,10 @@ var Neo4J = {
 		}});
 	},
 	loadScript:function(scripttype,filename) {
-		if(scripttype == '') {
+		if (scripttype == '') {
 			Neo4J.showError("No script type found");
 			return;
-		}else if(filename == '') {
+		} else if(filename == '') {
 			Neo4J.showError("No filename found");
 			return;
 		}
@@ -127,6 +127,11 @@ var Neo4J = {
 		$('#editor_tab a').click();
 		$('#scripttype').val('');
 		$('#paraminput').val('');
+		$('#username').val('');
+		$('#password').val('');
+		$('#Rusername').val('');
+		$('#Rpassword').val('');
+		$('#email').val('');
 	},
 	showResponse:function(response) {
 		var data = {};
@@ -148,16 +153,6 @@ var Neo4J = {
 };
 
 $(document).ready(function() {
-	$.ajax({url:"html/header.html",cache:false,dataType:'html',success:function(data) {
-		$('body').append(data);
-		$('.nav li:first').addClass('active');
-		$('#aboutlink').click(function() {
-			$('#aboutbox').show();
-		});
-		$('#aboutclose').click(function() {
-			$('#aboutbox').hide();
-		});
-	}}).error(function() { alert("error"); });
 	// Tabs handler
 	$('#neo4j .tabs li a').click(function() {
 		var tab=$(this).parents('li');
@@ -171,6 +166,19 @@ $(document).ready(function() {
 	$('.alert-message').click(function() {$('#message').find('p').text('').end().fadeOut();});
 	// execute script
 	$('#execbtn').click(function() {Neo4J.execScript($('#script').val(), $('#scripttype').val(), $('#paraminput').val());});
+	$('#loginbtn').click(function() {
+		Neo4J.doCommand({command:'login', 'username':$('#username').val(), 'password':$('#password').val(), callback:function(data) {
+			console.log('show oodebe');
+			if (data.result=='success') {
+				// $('.tabcontent').show();
+				// $('.tabs').show();
+				// $('#loginform').hide();
+				// $('#help').show();
+				window.location.href="/";
+				Neo4J.listAllScripts();
+			}
+		}});
+	}); 
 	// save script
 	$('#savebtn').click(function() {
 		Neo4J.saveScript($('#script').val(), $('#filename').val(), $('#description').val(), $('#scripttype').val(),$('#listorder').val(), $('#paraminput').val(), $('#overwrite').attr('checked'));
@@ -202,7 +210,58 @@ $(document).ready(function() {
 	$('#scriptindex li ol').hide();
 	$('#scriptindex li').toggle(function(){$(this).find('ol').show()},function(){$(this).find('ol').hide()});
 	// load script index
-	Neo4J.listAllScripts();
-
-			
+	// Neo4J.listAllScripts();
+	// $('.tabcontent').hide();
+	// $('.tabs').hide()
+	// $('#help').hide()
+	//index.html when inside oodebe
+ 	if ($('.tabs').length>0) {
+		$.ajax({url:"html/header.html", cache:false, dataType:'html',success:function(data) {
+			$('body').append(data);
+			$('.nav li:first').addClass('active');
+			$('#aboutlink').click(function() {
+				$('#aboutbox').show();
+			});
+			$('#aboutclose').click(function() {
+				$('#aboutbox').hide();
+			});
+			$('#logout').click(function() {
+				Neo4J.doCommand({command:'logout', callback:function(data) {
+					console.log('hide oodebe');
+					if (data.result=='success') {
+						window.location.href="/";
+					}
+				}});
+			}); 
+		}}).error(function() { alert("error"); });
+		Neo4J.listAllScripts();
+	} else {
+		//when login form
+	
+		$('.nav li:first').addClass('active');
+		$('#aboutlink').click(function() {
+			$('#aboutbox').show();
+		});
+		$('#aboutclose').click(function() {
+			$('#aboutbox').hide();
+		});
+		$('#registerbtn').click(function() {
+			$('#loginform').hide();
+			$('#registerform').show();
+		}); 
+		$('#backbtn').click(function() {
+			$('#registerform').hide();
+			$('#loginform').show();
+		});
+		$('#createbtn').click(function() {
+			Neo4J.doCommand({command:'newuser','username':$('#Rusername').val(), 
+			'password':$('#Rpassword').val(), 'email':$('#email').val(), callback:function(data) {
+				Neo4J.showMessage(data.message);
+				Neo4J.clearScript(); 
+			}});
+	});		
+		$('#registerform').hide();
+	}
+	$("#registerform form").validate();		
+	$("#loginform form").validate();		
 });

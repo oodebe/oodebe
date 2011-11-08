@@ -9,6 +9,7 @@
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <!-- script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script -->
 <script src="http://yandex.st/highlightjs/6.1/highlight.min.js"></script>
+<script type="text/javascript" src="http://dev.jquery.com/view/trunk/plugins/validate/jquery.validate.js"></script>
 <link rel="stylesheet" href="http://yandex.st/highlightjs/6.1/styles/default.min.css">
 <script src="js/neo4j.js"></script>
 <script src="js/json2.js"></script>
@@ -17,17 +18,76 @@
 <body>
 
 <div id="scriptbuilder" class="container">
-<section id="neo4j">
-	<div class="page-header">
-		<h2>Script Builder</h2>
-	</div>
+<section id="login">
 	<div id="message" class="alert-message" style="display:none">
 		<a class="close" href="#">&times;</a>
 		<p></p>
 	</div>
 	<div class="row">
 		<div class="span12 columns">
-			<ul class="tabs">
+			<!-- <ul class="tabs">
+				<li id="editor_tab" class="active"><a href="#ne4jeditor">Script Editor</a></li>
+				<li id="results_tab"><a href="#neo4jresults">Results</a></li>
+			</ul> -->
+			<img src="html/poster.png" width="100%">
+		</div>
+		<div  class="span4 columns">
+		<div id="loginform"> 
+			<form>
+				<div class="clearfix center">
+					<label for="filename">Username</label>
+					<div class="input">
+						<input type="text" class="large required" name="username" size="30" id="username">
+					</div>
+				</div>
+				<div class="clearfix">
+					<label for="description">Password</label>
+					<div class="input">
+						<input type="password" class="large required" name="password" size="30" id="password">
+					</div>
+				</div>
+				<div class=" actions span4">
+					<input type="button" id="loginbtn" value="Login" class="btn primary">
+					<input type="button" id="clearbtn" value="clear" class="btn">
+					<input type="button" id="registerbtn" value="Register" class="btn primary">
+				</div>
+			</form>
+			</div>
+			<div id="registerform"> 
+			<form>
+				<div class="clearfix center">
+					<label for="filename">Username</label>
+					<div class="input">
+						<input type="text" class="large required" name="Rusername" size="30" id="Rusername">
+					</div>
+				</div>
+				<div class="clearfix">
+					<label for="description">Password</label>
+					<div class="input">
+						<input type="password" class="large required" name="Rpassword" size="30" id="Rpassword">
+					</div>
+				</div>
+				<div class="clearfix">
+					<label for="description">Confirm Password</label>
+					<div class="input">
+						<input type="password" class="large required" name="CRpassword" size="30" id="Rpassword">
+					</div>
+				</div>
+				<div class="clearfix">
+					<label for="description">E-mail </label>
+					<div class="input">
+						<input type="text" class="large required" name="email" size="30" id="email">
+					</div>
+				</div>
+				<div class="actions span4">
+					<input type="button" id="createbtn" value="Register" class="btn primary">
+					<input type="button" id="clearbtn" value="clear" class="btn">
+					<input type="button" id="backbtn" value="Login" class="btn primary">
+					
+				</div>
+			</form>
+			</div>
+			<!-- <ul class="tabs">
 				<li id="editor_tab" class="active"><a href="#ne4jeditor">Script Editor</a></li>
 				<li id="results_tab"><a href="#neo4jresults">Results</a></li>
 			</ul>
@@ -82,16 +142,38 @@
 					<input type="button" id="clearbtn" value="clear" class="btn">
 				</div>
 			</form>
-			</div>
+			</div> -->
 			<div class="tabcontent" id="results_tab_content" style="display:none">
 				<div id="response">These are the results of the script</div>
 			</div>
-			<div id="message" class="alert-message" style="display:none">
-				<a class="close" href="#">&times;</a>
-				<p></p>
-			</div>
+
 		</div>
-		<div id="help" class="span4 columns">
+		<div class="topbar">
+  <div class="topbar-inner">
+	<div class="container">
+	  <h3><a href="/">Oodebe Utilities</a></h3>
+			<ul class="nav secondary-nav ">
+		<li><a id="aboutlink" href="#">About</a></li>
+	  </ul>
+	</div>
+
+  </div>
+</div>
+<div style="display:none" id="aboutbox" class="modal">
+	<div class="modal-header"><h3>Oodebe Utils</h3></div>
+	<div class="modal-body">
+		Oodebe is an asynchronous IO based REST API framework built on <a href="http://nodejs.org">node.js</a>. 
+		<ol>
+			<li>Provides facilities to develop, test and deploy a REST API server</li>
+			<li>Each API call can be constructed as a script</li>
+			<li>Scripts can be executed as either native node.js scripts or one of the supported plugins</li>
+			<li>Plugins allow scripts to access various REST servers such as Neo4j, SOLR, and Lily using their REST interface</li>
+			<li>Additional plugins can be written in the form of simple JSON configuration files</li>
+		</ol>
+	</div>
+	<div class="modal-footer"><a href="#" id="aboutclose" class="btn primary">ok</a></div>
+</div>
+		<!-- <div id="help" class="span4 columns">
 			<h3>Test Sequence</h3>
 
 			<ul id="testsequence">
@@ -176,10 +258,10 @@
 				<li><a href="http://www.slideshare.net/slidarko/the-pathology-of-graph-databases">Pathology of Graph Databases</a></li>
 				<li><a href="http://docs.outerthought.org/lily-docs-current/g3/g2/427-lily.html">Lily REST API</a></li>
 				<li><a href="http://nodejs.org/">Node.js API</a></li>
-			
 			</ul>
 		</div>
-	</div>
+ -->
+		</div>
 </section>
 
 <section id="results">
