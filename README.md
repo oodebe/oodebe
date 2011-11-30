@@ -32,6 +32,17 @@ Oodebe is an asynchronous IO based REST API framework built on node.js.
 * [Connect Module of Node] (https://github.com/senchalabs/connect)
 * 
 
+## Functions of index.js
+
+### processquery
+
+ Inputs :
+   query : Hash of Input Parameter by GET or POST
+   request : http.server  
+    
+    
+
+
 
 ## Running Sample Scripts
 
