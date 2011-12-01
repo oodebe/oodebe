@@ -38,14 +38,15 @@ for synchronizing operations on one or more back-end server modules.
 
 ## Configuration Variables
 
-* neo4jurl':"http://oodebe.com:7474/db/data/ext/GremlinPlugin/graphdb/execute_script",
-   'lilyurl':"http://oodebe.com:12060/repository/record/",
-	'solrurl':"http://oodebe.com:8983/solr/select?",
-	'mongodbhost':"localhost:27017/test?auto_reconnect",
-	'kbcollection' :'kb',
-	'serverport':'8000',
-	'solrhost':'localhost',
-	'solrport':'8983',
+* Neo4j REST URL e.g. 'neo4jurl':"http://localhost:7474/db/data/ext/GremlinPlugin/graphdb/execute_script",
+* Lily REST URL e.g. 'lilyurl':"http://localhost:12060/repository/record/",
+* Solr REST URL e.g. 'solrurl':"http://localhost:8983/solr/select?",
+* Mongodb Connection Url e.g. 'mongodbhost':"localhost:27017/test?auto_reconnect",
+* Server port on which server run e.g. 'serverport':'8000',
+* Host of solr  e.g.	'solrhost':'localhost',
+* Port of Solr e.g. 'solrport':'8983'
+* We can define our own config variable and use them in program. e.g. "newconfig": "value" can be use in program by
+  config.newconfig it will give "value".
 
 
 ## Running Sample Scripts
