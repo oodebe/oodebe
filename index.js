@@ -59,7 +59,7 @@ var server=connect(
 	connect.favicon(),
 	oodebe
 );
-server.listen(80);
+server.listen(config.serverport);
 sys.puts('server started at '+config.serverport);
 /*
   execScript({"filename": "nodejs/getbatches.scr",}, function (res) {
