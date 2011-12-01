@@ -48,6 +48,106 @@ for synchronizing operations on one or more back-end server modules.
 * We can define our own config variable and use them in program. e.g. "newconfig": "value" can be use in program by
   config.newconfig it will give "value".
 
+## Functions 
+### processquery
+   Input : query , request ,responsehttp
+   query : input parameter by GET or POST
+   request : http.server request parameter of callback
+   responsehttp: http.server response parameter of callback
+   
+### login
+   
+   Input : query , request ,responsehttp
+   query : input parameter by GET or POST
+   request : http.server request parameter of callback
+   responsehttp: http.server response parameter of callback
+   
+### logout 
+ 
+   Input : query , request ,responsehttp
+   query : input parameter by GET or POST
+   request : http.server request parameter of callback
+   responsehttp: http.server response parameter of callback
+
+### writeLog
+   Input : file, string, flag, mode, skipDate
+   file : Name of the file
+   string : content of file
+   flag : e.g. 'a' for apped mode
+   mode : e.g. 755
+   skipDate : Date which is to skip
+### delFromSolr
+
+   Input : id, query, callback
+   id : document id to be deleted 
+   query : input parametere
+   callback : function to call
+### addToSolr 
+   Input : doc,commit,callback
+   doc :  new document to add
+   commit : true /false
+### loadScript
+   load a file and return it's contents as an object
+   Input : request, callback
+   request :input parameter by GET or POST 
+### execScript
+  Input : request, callback
+  request :input parameter by GET or POST 
+### parseInputParamters  
+ parse the input parameter (string) by \n and first occurence of =
+ Output : json
+ Input : dataparaminput (input parameter request.paraminput)
+ 
+### saveScript
+  Input : request, callback
+  request :input parameter by GET or POST 
+  
+### savefile   
+  Input : request, callback
+  request :input parameter by GET or POST 
+
+### jsoncurl
+
+   Input : burl, bdata, callback
+   burl : url of the curl
+   bdata : data to send with curl request
+   
+### deleteScript
+
+  Input : query, callback
+  query : input parameter by GET or POST 
+   
+### getScripts
+   Input : file,results,callback
+   file : directory name in which all files are to be traversed.
+   results : array in which result of the files will be stored.
+   
+### fileprocess
+   Input : request, responsehttp
+   Output :  return the file with http respnse .
+   
+### sortScripts
+   Input : query, callback 
+   query : input parameter by GET or POST 
+### newuser
+   Input : user, callback
+   user : data of user in json which we want to store.
+   
+### authuser
+    Input : request, user, callback
+    request : http request 
+    user : input parameter by GET or POST  
+   
+   
+
+   
+   
+   
+   
+   
+   
+   
+   
 
 ## Running Sample Scripts
 
