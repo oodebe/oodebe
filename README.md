@@ -134,9 +134,9 @@ for synchronizing operations on one or more back-end server modules.
    user : data of user in json which we want to store.
    
 ### authuser
-    Input : request, user, callback
-    request : http request 
-    user : input parameter by GET or POST  
+   Input : request, user, callback
+   request : http request 
+   user : input parameter by GET or POST  
    
    
 
