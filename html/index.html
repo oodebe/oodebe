@@ -92,58 +92,7 @@
 			</div>
 		</div>
 		<div id="help" class="span4 columns">
-			<h3>Test Sequence</h3>
-
-			<ul id="testsequence">
-				<li><b>CREATE - KB Article</b>
-					<ol>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','addkb.scr');">Create Kb folder</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','addkba.scr');">Create Kb Article in Kb folder</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','addpatent.scr');">Add patents to Kb article</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('neo4j','');">Add a new document and Re-calculate patent families and return array of affected documents with respective patent family</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','updatekba.scr');">Update patent family for all affected documents</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','addcomment.scr');">Add comment to Kb article</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('solr','getkba.scr');">Get index entries for created Kb article and verify that there are 1+N+M entries</a></li>
-					</ol>
-				</li>
-				<li><b>RETRIEVE - KB Article</b>
-					<ol>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','retrievekba.scr');">Retrieve Kb article created</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('solr','getcomments.scr');">Retrieve all comments for an article</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('solr','getpatents.scr');">Retrieve all patents for an article</a></li>
-					</ol>
-				</li>
-				<li><b>UPDATE - KB Article</b>
-					<ol>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','updatekb.scr');">Update properties of a Kb folder</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('solr','getkbaforkb.scr');">Retrieve index entries of articles in the folder and verify that their linked properties have been changed</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','updatekba.scr');">Update properties of a Kb article</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('solr','getkba.scr');">Get index entries for created Kb article and verify that there are 1+N+M entries and all updated properties of article are duplicated</a></li>
-					</ol>
-				</li>
-				<li><b>DELETE - KB Article</b>
-					<ol>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','deletepatents.scr');">Delete patents for a Kb article</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','deletecomments.scr');">Delete comments for a Kb article</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','deletekba.scr');">Delete a Kb article</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('neo4j','');">Delete document vertex and return all affected documents with respective patent family</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','updatekba.scr');">Update patent family for all affected documents</a></li>
-					</ol>
-				</li>
-				<li><b>DELETE - KB Folder</b>
-					<ol>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','deletekb.scr');">Delete a Kb folder</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('solr','getkbaforkb.scr');">Search all articles in the folder and verify that their linked properties have been changed</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','deletekba.scr');">Delete the articles found in previous query</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('solr','getcomments.scr');">Search all comments for an article</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','deletecomments.scr');">Delete comments found in previous query</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('solr','getpatents.scr');">Search all patents for an article</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','deletepatents.scr');">Delete patents found in previous query</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('neo4j','');">Delete document vertex and return all affected documents with respective patent family</a></li>
-						<li><a href="#" onclick="Neo4J.loadScript('lily','updatekba.scr');">Update patent family for all affected documents</a></li>
-					</ol>
-				</li>
-			</ul>			
+			
 			<h3 id="reloadScripts">Scripts Index</h3>
 			<ul id="scriptindex">
 				<li id="scriptindex_lily"><b>Lily</b>
