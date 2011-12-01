@@ -50,92 +50,92 @@ for synchronizing operations on one or more back-end server modules.
 
 ## Functions 
 ### processquery
-   Input : query , request ,responsehttp
-   query : input parameter by GET or POST
-   request : http.server request parameter of callback
+   Input : query , request ,responsehttp <br/> 
+   query : input parameter by GET or POST <br/> 
+   request : http.server request parameter of callback <br/> 
    responsehttp: http.server response parameter of callback
    
 ### login
    
-   Input : query , request ,responsehttp
-   query : input parameter by GET or POST
-   request : http.server request parameter of callback
+   Input : query , request ,responsehttp <br/> 
+   query : input parameter by GET or POST <br/> 
+   request : http.server request parameter of callback <br/> 
    responsehttp: http.server response parameter of callback
    
 ### logout 
  
-   Input : query , request ,responsehttp
-   query : input parameter by GET or POST
-   request : http.server request parameter of callback
+   Input : query , request ,responsehttp <br/> 
+   query : input parameter by GET or POST <br/> 
+   request : http.server request parameter of callback <br/> 
    responsehttp: http.server response parameter of callback
 
 ### writeLog
-   Input : file, string, flag, mode, skipDate
-   file : Name of the file
-   string : content of file
-   flag : e.g. 'a' for apped mode
-   mode : e.g. 755
+   Input : file, string, flag, mode, skipDate <br/> 
+   file : Name of the file <br/> 
+   string : content of file <br/> 
+   flag : e.g. 'a' for apped mode <br/> 
+   mode : e.g. 755 <br/> 
    skipDate : Date which is to skip
 ### delFromSolr
 
    Input : id, query, callback
-   id : document id to be deleted 
-   query : input parametere
+   id : document id to be deleted  <br/> 
+   query : input parametere <br/> 
    callback : function to call
 ### addToSolr 
-   Input : doc,commit,callback
-   doc :  new document to add
+   Input : doc,commit,callback <br/> 
+   doc :  new document to add <br/> 
    commit : true /false
 ### loadScript
    load a file and return it's contents as an object
-   Input : request, callback
+   Input : request, callback <br/> 
    request :input parameter by GET or POST 
 ### execScript
-  Input : request, callback
+  Input : request, callback <br/> 
   request :input parameter by GET or POST 
 ### parseInputParamters  
- parse the input parameter (string) by \n and first occurence of =
- Output : json
- Input : dataparaminput (input parameter request.paraminput)
+ parse the input parameter (string) by \n and first occurence of = 
+ Output : json <br/> 
+ Input : dataparaminput (input parameter request.paraminput) <br/> 
  
 ### saveScript
-  Input : request, callback
+  Input : request, callback <br/> 
   request :input parameter by GET or POST 
   
 ### savefile   
-  Input : request, callback
+  Input : request, callback <br/> 
   request :input parameter by GET or POST 
 
 ### jsoncurl
 
-   Input : burl, bdata, callback
-   burl : url of the curl
-   bdata : data to send with curl request
+   Input : burl, bdata, callback <br/> 
+   burl : url of the curl <br/> 
+   bdata : data to send with curl request 
    
 ### deleteScript
 
-  Input : query, callback
-  query : input parameter by GET or POST 
+  Input : query, callback <br/> 
+  query : input parameter by GET or POST  <br/> 
    
 ### getScripts
-   Input : file,results,callback
-   file : directory name in which all files are to be traversed.
+   Input : file,results,callback <br/> 
+   file : directory name in which all files are to be traversed. <br/> 
    results : array in which result of the files will be stored.
    
 ### fileprocess
-   Input : request, responsehttp
+   Input : request, responsehttp <br/> 
    Output :  return the file with http respnse .
    
 ### sortScripts
-   Input : query, callback 
+   Input : query, callback  <br/> 
    query : input parameter by GET or POST 
 ### newuser
-   Input : user, callback
+   Input : user, callback <br/> 
    user : data of user in json which we want to store.
    
 ### authuser
-   Input : request, user, callback
-   request : http request 
+   Input : request, user, callback <br/> 
+   request : http request  <br/> 
    user : input parameter by GET or POST  
    
    
