@@ -13,13 +13,7 @@ var sys = require("sys"),
 	Log = require('log'),
 	uuid = require('node-uuid'),
 	url = require("url");
-var users={
-	'rahul':{
-		username:'rahul',
-		password:'123',
-		auth:false
-	}
-};
+
 // files with saved as scripttype/filename , this is to save file operation
 var filescache={}; //hash for saving the scirpts in file cache 
 //process.cwd() not work with upstart so changed to __dirname
@@ -61,15 +55,7 @@ var server=connect(
 );
 server.listen(config.serverport);
 sys.puts('server started at '+config.serverport);
-/*
-  execScript({"filename": "nodejs/getbatches.scr",}, function (res) {
-    if (!res) {
-	    console.log('No response found while executing getbatches.scr');
-    } else {
-	    console.log('Executed getbatches.scr '+JSON.stringify(res));
-    } 
-	});
-*/
+
 var results=[];
 getStatusFiles(__dirname+'/batches', function() {
 	var len = results.length;
