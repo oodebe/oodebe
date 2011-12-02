@@ -54,10 +54,10 @@ var oodebe=function(request, responsehttp, next) {
 	}
 };
 var server=connect(
-	connect.cookieParser(),
-	connect.session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}),
-	connect.favicon(),
-	oodebe
+   connect.cookieParser(),
+   connect.session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}),
+   connect.favicon(),
+   oodebe
 );
 server.listen(config.serverport);
 sys.puts('server started at '+config.serverport);
@@ -188,16 +188,7 @@ function processquery(query, request, responsehttp){
 	}
 }
 
-function login(request, query, responsehttp) {
-	if (users[query.username] && query.username==users[query.username].username && query.password==users[query.username].password) {
-		request.session.auth = true;
-		var data = {result:'success','message':'login successful'};
-		responsehttp.end(JSON.stringify(data));
-	} else {
-		var data = {result:'error','message':'login incorrect'};
-		responsehttp.end(JSON.stringify(data));
-	}
-}
+
 
 function logout(request, query, responsehttp) {
 	request.session.destroy();
