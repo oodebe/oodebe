@@ -50,26 +50,23 @@ for synchronizing operations on one or more back-end server modules.
 
 ## Functions 
 ### processquery
+   Used to process each command requested by user .
    Input : query , request ,responsehttp <br/> 
    query : input parameter by GET or POST <br/> 
    request : http.server request parameter of callback <br/> 
    responsehttp: http.server response parameter of callback
    
-### login
-   
-   Input : query , request ,responsehttp <br/> 
-   query : input parameter by GET or POST <br/> 
-   request : http.server request parameter of callback <br/> 
-   responsehttp: http.server response parameter of callback
+
    
 ### logout 
- 
+   Destroy the session 
    Input : query , request ,responsehttp <br/> 
    query : input parameter by GET or POST <br/> 
    request : http.server request parameter of callback <br/> 
    responsehttp: http.server response parameter of callback
 
 ### writeLog
+   Write to the file.
    Input : file, string, flag, mode, skipDate <br/> 
    file : Name of the file <br/> 
    string : content of file <br/> 
@@ -77,63 +74,74 @@ for synchronizing operations on one or more back-end server modules.
    mode : e.g. 755 <br/> 
    skipDate : Date which is to skip
 ### delFromSolr
-
+   Delete document from solr.
    Input : id, query, callback <br/> 
    id : document id to be deleted  <br/> 
    query : input parametere <br/> 
    callback : function to call
 ### addToSolr 
+   Convert lily doc and add to solr.
    Input : doc,commit,callback <br/> 
    doc :  new document to add <br/> 
    commit : true /false
 ### loadScript
-   load a file and return it's contents as an object <br/> 
+   Load a file and return it's contents as an object <br/> 
    Input : request, callback <br/> 
    request :input parameter by GET or POST 
 ### execScript
+  Execute a script 
   Input : request, callback <br/> 
   request :input parameter by GET or POST 
 ### parseInputParamters  
- parse the input parameter (string) by \n and first occurence of =  <br/> 
+ Parse the input parameter (string) by \n and first occurence of =  <br/> 
  Output : json <br/> 
  Input : dataparaminput (input parameter request.paraminput) <br/> 
  
 ### saveScript
+  If file overwrite!=checked create else update 
+  Save the script.
   Input : request, callback <br/> 
   request :input parameter by GET or POST 
   
 ### savefile   
+ Save the script.
   Input : request, callback <br/> 
   request :input parameter by GET or POST 
 
 ### jsoncurl
-
+   Send curl request ot REST Server 
    Input : burl, bdata, callback <br/> 
    burl : url of the curl <br/> 
    bdata : data to send with curl request 
    
 ### deleteScript
-
+  Delete a script.
   Input : query, callback <br/> 
   query : input parameter by GET or POST  <br/> 
    
 ### getScripts
+   Get all script in a folder and add data in results .
    Input : file,results,callback <br/> 
    file : directory name in which all files are to be traversed. <br/> 
    results : array in which result of the files will be stored.
    
 ### fileprocess
+   Send file to http if command is not defined.
    Input : request, responsehttp <br/> 
    Output :  return the file with http respnse .
    
 ### sortScripts
+   Sort the scrips.
    Input : query, callback  <br/> 
    query : input parameter by GET or POST 
 ### newuser
+   Register a new user to oodebe.
    Input : user, callback <br/> 
    user : data of user in json which we want to store.
    
 ### authuser
+   Check authentication of user .
+   
    Input : request, user, callback <br/> 
    request : http request  <br/> 
    user : input parameter by GET or POST  
