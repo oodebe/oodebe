@@ -1,4 +1,4 @@
-#Oodebe
+d#Oodebe
 
 Oodebe is an asynchronous I/O based framework built on node.js for providing a consistent client (REST) API 
 for synchronizing operations on one or more back-end server modules.
@@ -35,6 +35,107 @@ for synchronizing operations on one or more back-end server modules.
 * [UUID Module of Node] (https://github.com/broofa/node-uuid)
 * [Cluster Module of Node] (https://github.com/LearnBoost/cluster)
 * [Connect Module of Node] (https://github.com/senchalabs/connect)
+## Functions 
+
+
+   
+   
+### loadScript
+   Load a file and return it's contents as an object <br/> 
+   Input : request, callback <br/> 
+   request :input parameter by GET or POST 
+   
+### execScript
+  Execute a script 
+  Input : request, callback <br/> 
+  request :input parameter by GET or POST 
+  
+
+ 
+### saveScript
+  If file overwrite!=checked create else update 
+  Save the script.
+  Input : request, callback <br/> 
+  request :input parameter by GET or POST 
+  
+
+   
+### deleteScript
+  Delete a script.
+  Input : query, callback <br/> 
+  query : input parameter by GET or POST  <br/> 
+   
+### getScripts
+   Get all script in a folder and add data in results .
+   Input : file,results,callback <br/> 
+   file : directory name in which all files are to be traversed. <br/> 
+   results : array in which result of the files will be stored.
+   
+
+   
+### sortScripts
+   Sort the scrips.
+   Input : query, callback  <br/> 
+   query : input parameter by GET or POST 
+### newuser
+   Register a new user to oodebe.
+   Input : user, callback <br/> 
+   user : data of user in json which we want to store.
+   
+### authuser
+   Check authentication of user .
+   
+   Input : request, user, callback <br/> 
+   request : http request  <br/> 
+   user : input parameter by GET or POST  
+### logout 
+   Destroy the session 
+Input : query , request ,responsehttp <br/> 
+query : input parameter by GET or POST <br/> 
+request : http.server request parameter of callback <br/> 
+responsehttp: http.server response parameter of callback
+
+### fileprocess
+   Send file to http if command is not defined.
+   Input : request, responsehttp <br/> 
+   Output :  return the file with http respnse .
+   
+### savefile   
+ Save the script.
+  Input : request, callback <br/> 
+  request :input parameter by GET or POST 
+
+### jsoncurl
+   Send curl request ot REST Server 
+   Input : burl, bdata, callback <br/> 
+   burl : url of the curl <br/> 
+   bdata : data to send with curl request    
+
+### parseInputParamters  
+ Parse the input parameter (string) by \n and first occurence of =  <br/> 
+ Output : json <br/> 
+ Input : dataparaminput (input parameter request.paraminput) <br/> 
+ 
+ ### processquery
+   Used to process each command requested by user .
+   Input : query , request ,responsehttp <br/> 
+   query : input parameter by GET or POST <br/> 
+   request : http.server request parameter of callback <br/> 
+   responsehttp: http.server response parameter of callback
+   
+
+   
+
+
+### writeLog
+   Write to the file.
+   Input : file, string, flag, mode, skipDate <br/> 
+   file : Name of the file <br/> 
+   string : content of file <br/> 
+   flag : e.g. 'a' for apped mode <br/> 
+   mode : e.g. 755 <br/> 
+   skipDate : Date which is to skip
+ 
 
 ## Configuration Variables
 
