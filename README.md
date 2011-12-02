@@ -37,7 +37,6 @@ for synchronizing operations on one or more back-end server modules.
 * [Connect Module of Node] (https://github.com/senchalabs/connect)
 ## Functions 
 
-
    
    
 ### loadScript
@@ -46,14 +45,14 @@ for synchronizing operations on one or more back-end server modules.
    request :input parameter by GET or POST 
    
 ### execScript
-  Execute a script 
+  Execute a script  <br/>
   Input : request, callback <br/> 
   request :input parameter by GET or POST 
   
 
  
 ### saveScript
-  If file overwrite!=checked create else update 
+  If file overwrite!=checked create else update  <br/>
   Save the script.
   Input : request, callback <br/> 
   request :input parameter by GET or POST 
@@ -61,63 +60,65 @@ for synchronizing operations on one or more back-end server modules.
 
    
 ### deleteScript
-  Delete a script.
+  Delete a script. <br/>
   Input : query, callback <br/> 
   query : input parameter by GET or POST  <br/> 
    
 ### getScripts
-   Get all script in a folder and add data in results .
+   Get all script in a folder and add data in results . <br/>
    Input : file,results,callback <br/> 
    file : directory name in which all files are to be traversed. <br/> 
    results : array in which result of the files will be stored.
    
 
    
-### sortScripts
-   Sort the scrips.
+### sortScripts 
+   Sort the scrips. <br/>
    Input : query, callback  <br/> 
    query : input parameter by GET or POST 
 ### newuser
-   Register a new user to oodebe.
+   Register a new user to oodebe. <br/>
    Input : user, callback <br/> 
    user : data of user in json which we want to store.
    
 ### authuser
-   Check authentication of user .
+   Check authentication of user . <br/>
    
    Input : request, user, callback <br/> 
    request : http request  <br/> 
    user : input parameter by GET or POST  
 ### logout 
-   Destroy the session 
+   Destroy the session  <br/>
 Input : query , request ,responsehttp <br/> 
 query : input parameter by GET or POST <br/> 
 request : http.server request parameter of callback <br/> 
 responsehttp: http.server response parameter of callback
 
 ### fileprocess
-   Send file to http if command is not defined.
+   Send file to http if command is not defined. <br/>
    Input : request, responsehttp <br/> 
    Output :  return the file with http respnse .
    
 ### savefile   
- Save the script.
+ Save the script. <br/>
   Input : request, callback <br/> 
   request :input parameter by GET or POST 
 
 ### jsoncurl
-   Send curl request ot REST Server 
+   Send curl request ot REST Server  <br/>
    Input : burl, bdata, callback <br/> 
    burl : url of the curl <br/> 
    bdata : data to send with curl request    
 
 ### parseInputParamters  
+
  Parse the input parameter (string) by \n and first occurence of =  <br/> 
  Output : json <br/> 
  Input : dataparaminput (input parameter request.paraminput) <br/> 
  
- ### processquery
-   Used to process each command requested by user .
+### processquery
+ 
+   Used to process each command requested by user . <br/>
    Input : query , request ,responsehttp <br/> 
    query : input parameter by GET or POST <br/> 
    request : http.server request parameter of callback <br/> 
