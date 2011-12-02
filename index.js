@@ -218,45 +218,7 @@ function writeLog(file, string,flag,mode,skipDate) {
     }
 }
 
-function delFromSolr(id, query, callback){
-    if(!query || query =='') {
-			return;
-    }
-    client.del(id, query, function(err, response) {
-	if (err) {
-	    if (callback) {
-				callback(err);
-	    } else {
-				console.log("error deleting document");
-	    }
-	} else {
-	  if(callback) {
-			callback(err);
-		} else {
-			console.log('Deleted all docs matching query "' + query + '"');
-		}
-	 }
-	 client.commit();
-	});
-}
 
-function addToSolr(doc,commit,callback){
-    var commit = (!commit || commit=='false' || commit=='0')?false:true;
-
-    execScript({'filename':'nodejs/converlilytosolr.scr',paraminput:doc}, function(res){
-	if (res.success!='error') {
-         //   if(commit) {
-                client.commit();
-                log.info(doc.id + 'committed to solr');
-           // }
-	} else {
-	    log.info('Error in adding '+doc.id +' to solr');
-	}
-	if(callback) {
-	    callback(res);
-	}
-    });
-}
 
 function testscript(){
 
