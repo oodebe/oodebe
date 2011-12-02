@@ -78,7 +78,7 @@ for synchronizing operations on one or more back-end server modules.
    skipDate : Date which is to skip
 ### delFromSolr
 
-   Input : id, query, callback
+   Input : id, query, callback <br/> 
    id : document id to be deleted  <br/> 
    query : input parametere <br/> 
    callback : function to call
@@ -87,14 +87,14 @@ for synchronizing operations on one or more back-end server modules.
    doc :  new document to add <br/> 
    commit : true /false
 ### loadScript
-   load a file and return it's contents as an object
+   load a file and return it's contents as an object <br/> 
    Input : request, callback <br/> 
    request :input parameter by GET or POST 
 ### execScript
   Input : request, callback <br/> 
   request :input parameter by GET or POST 
 ### parseInputParamters  
- parse the input parameter (string) by \n and first occurence of = 
+ parse the input parameter (string) by \n and first occurence of =  <br/> 
  Output : json <br/> 
  Input : dataparaminput (input parameter request.paraminput) <br/> 
  
