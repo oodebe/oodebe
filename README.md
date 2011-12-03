@@ -16,27 +16,35 @@ for synchronizing operations on one or more back-end server modules.
 * Make sure you have installed the required back-end servers such as HBase, Solr, Lily, MongoDB etc.
 * Edit configuration variables in conf.js so as to map the various server access details (see configuration variables below)
 * Start oodebe server:   
-```javascript   
+```   
    node index.js
 ```
 
 * Start oodebe web console (assuming server is configured on port 8000:
-```javascript          
+```         
    http://localhost:8000
 ```
    
 ## Requirements
 
 * [Node 0.4.12] (http://nodejs.org/)
+* [NPM](http://npmjs.org/)
 * [Async Module of Node] (https://github.com/caolan/async)
+   For installing do ```npm install async```
 * [Rest Module of Node] (https://github.com/danwrong/restler)
+ For installing do ```npm install restler```
 * [Mongo Module of Node] (https://github.com/guileen/node-mongoskin)
+ For installing do ```npm install mongoskin```
 * [Solr Module of Node] (https://github.com/gsf/node-solr)
+   For installing do ```git clone git://github.com/gsf/node-solr.git (in node_modules folder)```
 * [Log Module of Node] (https://github.com/visionmedia/log.js)
+ For installing do ```npm install log```
 * [UUID Module of Node] (https://github.com/broofa/node-uuid)
+ For installing do ```npm install node-uuid```
 * [Cluster Module of Node] (https://github.com/LearnBoost/cluster)
+ For installing do ```npm install cluster```
 * [Connect Module of Node] (https://github.com/senchalabs/connect)
-
+ For installing do ```npm install connect```
  
 
 ## Configuration Variables
