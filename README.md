@@ -35,47 +35,9 @@ for synchronizing operations on one or more back-end server modules.
 * [UUID Module of Node] (https://github.com/broofa/node-uuid)
 * [Cluster Module of Node] (https://github.com/LearnBoost/cluster)
 * [Connect Module of Node] (https://github.com/senchalabs/connect)
+
 ## Functions 
 
-   
-   
-### loadScript
-   Load a file and return it's contents as an object <br/> 
-   Input : request, callback <br/> 
-   request :input parameter by GET or POST 
-   
-### execScript
-  Execute a script  <br/>
-  Input : request, callback <br/> 
-  request :input parameter by GET or POST 
-  
-
- 
-### saveScript
-  If file overwrite!=checked create else update  <br/>
-  Save the script.
-  Input : request, callback <br/> 
-  request :input parameter by GET or POST 
-  
-
-   
-### deleteScript
-  Delete a script. <br/>
-  Input : query, callback <br/> 
-  query : input parameter by GET or POST  <br/> 
-   
-### getScripts
-   Get all script in a folder and add data in results . <br/>
-   Input : file,results,callback <br/> 
-   file : directory name in which all files are to be traversed. <br/> 
-   results : array in which result of the files will be stored.
-   
-
-   
-### sortScripts 
-   Sort the scrips. <br/>
-   Input : query, callback  <br/> 
-   query : input parameter by GET or POST 
 ### newuser
    Register a new user to oodebe. <br/>
    Input : user, callback <br/> 
