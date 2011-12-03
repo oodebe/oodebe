@@ -16,13 +16,14 @@ for synchronizing operations on one or more back-end server modules.
 * Make sure you have installed the required back-end servers such as HBase, Solr, Lily, MongoDB etc.
 * Edit configuration variables in conf.js so as to map the various server access details (see configuration variables below)
 * Start oodebe server:   
-   
+```javascript   
    node index.js
+```
 
 * Start oodebe web console (assuming server is configured on port 8000:
-       
-
+```javascript          
    http://localhost:8000
+```
    
 ## Requirements
 
