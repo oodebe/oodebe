@@ -36,68 +36,6 @@ for synchronizing operations on one or more back-end server modules.
 * [Cluster Module of Node] (https://github.com/LearnBoost/cluster)
 * [Connect Module of Node] (https://github.com/senchalabs/connect)
 
-## Functions 
-
-### newuser
-   Register a new user to oodebe. <br/>
-   Input : user, callback <br/> 
-   user : data of user in json which we want to store.
-   
-### authuser
-   Check authentication of user . <br/>
-   
-   Input : request, user, callback <br/> 
-   request : http request  <br/> 
-   user : input parameter by GET or POST  
-### logout 
-   Destroy the session  <br/>
-Input : query , request ,responsehttp <br/> 
-query : input parameter by GET or POST <br/> 
-request : http.server request parameter of callback <br/> 
-responsehttp: http.server response parameter of callback
-
-### fileprocess
-   Send file to http if command is not defined. <br/>
-   Input : request, responsehttp <br/> 
-   Output :  return the file with http respnse .
-   
-### savefile   
- Save the script. <br/>
-  Input : request, callback <br/> 
-  request :input parameter by GET or POST 
-
-### jsoncurl
-   Send curl request ot REST Server  <br/>
-   Input : burl, bdata, callback <br/> 
-   burl : url of the curl <br/> 
-   bdata : data to send with curl request    
-
-### parseInputParamters  
-
- Parse the input parameter (string) by \n and first occurence of =  <br/> 
- Output : json <br/> 
- Input : dataparaminput (input parameter request.paraminput) <br/> 
- 
-### processquery
- 
-   Used to process each command requested by user . <br/>
-   Input : query , request ,responsehttp <br/> 
-   query : input parameter by GET or POST <br/> 
-   request : http.server request parameter of callback <br/> 
-   responsehttp: http.server response parameter of callback
-   
-
-   
-
-
-### writeLog
-   Write to the file.
-   Input : file, string, flag, mode, skipDate <br/> 
-   file : Name of the file <br/> 
-   string : content of file <br/> 
-   flag : e.g. 'a' for apped mode <br/> 
-   mode : e.g. 755 <br/> 
-   skipDate : Date which is to skip
  
 
 ## Configuration Variables
