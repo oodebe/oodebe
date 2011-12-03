@@ -10,6 +10,9 @@ for synchronizing operations on one or more back-end server modules.
 * Plugins allow scripts to access various REST servers such as Neo4j, SOLR, MongoDB, and Lily using their REST interface
 * Additional plugins can be written in the form of simple JSON configuration files
 
+## Wiki
+* [Installation](https://github.com/oodebe/oodebe/wiki/Installation)
+* [Functions](https://github.com/oodebe/oodebe/wiki/Functions)
 
    
 
