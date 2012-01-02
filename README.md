@@ -12,6 +12,11 @@ for synchronizing operations on one or more back-end server modules.
 
 ## Files and Folders
 
+Oodebe includes the following files and folders to provide its functionality
+
+# Files
+
+
 ## Wiki
 * [Installation](https://github.com/oodebe/oodebe/wiki/Installation)
 * [Functions](https://github.com/oodebe/oodebe/wiki/Functions)
