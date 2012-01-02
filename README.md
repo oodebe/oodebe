@@ -16,6 +16,9 @@ Oodebe includes the following files and folders to provide its functionality
 
 ### Files
 
+####index.js:
+Contains all the library functions of oodebe which are used in different level of processing over various inputs. 
+It also initializes the REST API server and provides support for the developer console.
 
 ## Wiki
 * [Installation](https://github.com/oodebe/oodebe/wiki/Installation)
