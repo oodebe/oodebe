@@ -11,7 +11,6 @@ for synchronizing operations on one or more back-end server modules.
 * Additional plugins can be written in the form of simple JSON configuration files
 
 ## Files and Folders
-
 Oodebe includes the following files and folders to provide its functionality
 
 ### Files
