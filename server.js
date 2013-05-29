@@ -65,17 +65,43 @@ function router(request, responsehttp, next){
 		}
 	}
 	var query,queue;
-	if (request.method == 'POST'){
+	if (request.method == 'POST') {
 		var body = '';
 		request.on('data', function (data){
 			body += data;
 		}); 
 		request.on('end', function (){
 			query = qs.parse(body);
+			if(query['_op'] == undefined) {
+				var pathName = request.url.split('/');
+				var op = "";
+				for(var i = 0; i < pathName.length; i++) {
+					if(pathName[i] != "") {
+						op += pathName[i] + ".";
+					}
+				}
+				if(op != "") {
+					op = op.replace(/[.]$/,'');
+					query['_op'] = op;
+				}
+			}
 			queue=new Queue(query, context);
 		});
-	} else{
+	} else {
 		var url_parts = url.parse(request.url, true);
+		if(url_parts.query['_op'] == undefined) {
+			var pathName = url_parts.pathname.split('/');
+			var op = "";
+			for(var i = 0; i < pathName.length; i++) {
+				if(pathName[i] != "") {
+					op += pathName[i] + ".";
+				}
+			}
+			if(op != "") {
+				op = op.replace(/[.]$/,'');
+				url_parts.query['_op'] = op;
+			}
+		}
 		query = url_parts.query;
 		queue=new Queue(query, context);
 	}
