@@ -1,4 +1,7 @@
+var util = require('util');
 var	fs = require("fs");
+var Controller=require('./Controller');
+var path = process.env.npm_package_config_plugins || './config';
 
 //-----------------------------------------------------------
 // Class Definition
@@ -9,13 +12,15 @@ var	fs = require("fs");
  * filename: filename to write the log file
  * context: object containng method 'sendError'
  */
-function Logger(filename,context) {
+function Logger(filename,logPath,uuid,context) {
 	// set context
 	if (context) {
 		self.context=context;
 	}
 	// set filename and open file
-	this.openStream(filename);
+	if(!this.openStream(filename,logPath,uuid)) {
+		this.success=false;
+	}
 }
 
 /* Class static variable for maintaining all stream handles
@@ -30,7 +35,7 @@ Logger.streams={};
 /* openStream
  * opens/creates the specified log file stream and saves the handle in the instance variable
  */
-Logger.prototype.openStream = function(filename) {
+Logger.prototype.openStream = function(filename,logPath,uuid) {
 	var self = this;
 	if (!filename) {
 		filename=this.filename;
@@ -43,7 +48,29 @@ Logger.prototype.openStream = function(filename) {
 	if (Logger.streams[filename]) {
 		self.stream=Logger.streams[filename];
 	} else {
-		self.stream=fs.createWriteStream(__dirname+'/logs/'+self.filename,{flags:'a+',mode:'777',encoding:'utf8'});
+		var filePath = "";
+		
+		if(logPath.trim() == "") {
+			filePath = __dirname + '/logs/';
+			var exists = fs.existsSync(filePath);
+			if(!exists) {
+				try {
+					fs.mkdirSync(filePath, 0777);
+				} catch(e) {
+					console.log("Error creating default logs folder : " + e);
+					return false;
+				}
+			}
+		} else {
+			filePath = logPath;
+		}
+		
+		var filename = (uuid != undefined && uuid.trim() != "") ? uuid + "_" + self.filename : self.filename;
+		
+		console.log("Log files location : " + filePath + filename);
+		
+		self.stream=fs.createWriteStream(filePath+filename,{flags:'a+',mode:'777',encoding:'utf8'});
+		//~ self.stream=fs.createWriteStream(__dirname+'/logs/'+self.filename,{flags:'a+',mode:'777',encoding:'utf8'});
 		Logger.streams[self.filename]=self.stream;
 		self.stream.on('error',function(err) {
 			if (self.context && self.context.sendError) {
@@ -51,6 +78,7 @@ Logger.prototype.openStream = function(filename) {
 			}
 		});
 	}
+	return true;
 }
 
 /* writeLog

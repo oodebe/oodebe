@@ -19,7 +19,7 @@ function Processor(config,queue,parent) {
 	// assign a uuid
 	self.uuid=uuid.v4();
 	// save attributes
-	if (config) self.config=config;
+	if (config) self.config = JSON.parse(JSON.stringify(config));
 	if (queue) self.queue=queue;
 	if (parent) {
 		self.parent=parent;
@@ -175,11 +175,11 @@ Processor.prototype.sendStatus = function(data) {
 	data.query=self.queue.data;
 	self.queue.sendStatus(data);
 	// create a pipe separated string and add to log
-	if (data.event=='done') {
-		var logentry=data.tstamp+' | '+data.time+' | '+data.interval+ ' | '+data.className+' | '+data.uuid+' | '+
-		JSON.stringify(data.config)+' | '+JSON.stringify(data.query)+'\n';
-		self.queue.addLogEntry(logentry);
-	}
+	//~ if (data.event=='done') { //Commented the following lines
+		//~ var logentry=data.tstamp+' | '+data.time+' | '+data.interval+ ' | '+data.className+' | '+data.uuid+' | '+
+		//~ JSON.stringify(data.config)+' | '+JSON.stringify(data.query)+'\n';
+		//~ self.queue.addLogEntry(logentry);
+	//~ }
 }
 //-----------------------------------------------------------
 // Exports - Class Constructor

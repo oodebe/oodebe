@@ -4,6 +4,7 @@ var util = require('util');
 var config = require(plugins);
 var Controller=require('./Controller');
 var Logger=require('./Logger');
+var	fs = require("fs");
 require('date-utils');
 
 //-----------------------------------------------------------
@@ -91,14 +92,53 @@ function Queue(data,context) {
 	if (!config.processors[self.operation['type']]) {
 		return self.sendError('Invalid processor '+self.operation['type']+' in '+self.modelName+'.'+self.operationName+'... not found in config');
 	}
-	// check if the operation has a log file and create a logger
-	if (self.operation['log']) {
-		self.logger = new Logger(self.operation['log']);
-	}
+	
 	// create an instance for the controller
 	self.controller=new config.processors[self.operation['type']](self.operation,self);
 	// enable and emit start event to start the controller
 	self.controller.enable('start');
+	
+	// check if the operation has a log file and create a logger
+	if (self.operation['log'] || 'filename' in data) {
+		self.logger ={};
+		var logPath = "";
+		
+		if(data['logFolderPath'] != undefined && data['logFolderPath'].trim() != "") {
+			var param = data['logFolderPath'];
+			param = param.replace(/[\/]$/,'').trim();
+
+			if(param != "") {
+				try {
+					var exists = fs.lstatSync(param);
+					if(exists.isDirectory()) {
+						logPath = param + "/";
+					}
+				} catch (e) {
+					console.log('No such file or directory "' + param + '" exists...ignoring request');
+				}				
+			}
+		}
+		
+		var success = true;
+		
+		for(i in self.operation['log']) {
+			var filename = self.operation['log'][i] || data['filename'];
+			self.logger[i] = new Logger(filename, logPath, self.controller.uuid);
+			
+			if((self.logger[i].success != undefined) && !self.logger[i].success) {
+				success = false;
+				break;
+			}
+		}
+		
+		if(!success) {
+			return self.sendError('Error creating default log folder.');
+		}
+	}
+	//~ // check if the operation has a log file and create a logger
+	//~ if (self.operation['log']) {
+		//~ self.logger = new Logger(self.operation['log']);
+	//~ }
 	
 	Queue.pending[self.modelName] = self.operationName;
 	
@@ -180,12 +220,18 @@ Queue.prototype.endRequest = function(data) {
 /*
  * addLogEntry - add a string to the log file
  */
-Queue.prototype.addLogEntry = function(logentry) {
-	if (this.logger) {
-		this.logger.writeLog(logentry);
+//~ Queue.prototype.addLogEntry = function(logentry) {
+	//~ if (this.logger) {
+		//~ this.logger.writeLog(logentry);
+	//~ }
+//~ }
+
+Queue.prototype.addLogEntry = function(logentry,key) {
+	//console.log(this.logger[key])
+	if (key in this.logger) {
+		this.logger[key].writeLog(logentry);
 	}
 }
-
 
 // Static variable locks
 Queue.locks = {};
