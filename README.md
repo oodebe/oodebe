@@ -4,25 +4,31 @@ object-oriented data exploration and binding engine
 
 # What is oodebe?
 
-object-oriented
+### object-oriented
+
 Handle operations on objects in the conventional object-oriented paradigm
 
-data exploration
+### data exploration
+
 Explore objects using search and retrieval in response to a query or a set of constraints
 
-data binding
+### data binding
+
 Bind objects for storage or retrieval to one or more data sources or database engines so as to maintain synchronization between them
 
 # Why oodebe?
 
-Polyglot Persistence
-To build applications that handle complex objects which represent different types of information, we often need to use a combination of multiple persistence or indexing engines such as:
-Relational : Oracle, MS-SQL, Mysql, PostgreSQL, Greenplum, Teradata
-Key/Value : BerkleyDB, MemcachedDB, Redis, Voldermort
-Column-oriented : Hadoop/Big Insights, Hbase, Cassandra
-Document-oriented : MongoDB, CouchDB, Riak
-Graph-oriented : Neo4J, Blueprints
-Search : Solr, Elastic Search, GSA
+
+
+### Polyglot Persistence
+
+* To build applications that handle complex objects which represent different types of information, we often need to use a combination of multiple persistence or indexing engines such as:
+* Relational : Oracle, MS-SQL, Mysql, PostgreSQL, Greenplum, Teradata
+* Key/Value : BerkleyDB, MemcachedDB, Redis, Voldermort
+* Column-oriented : Hadoop/Big Insights, Hbase, Cassandra
+* Document-oriented : MongoDB, CouchDB, Riak
+* Graph-oriented : Neo4J, Blueprints
+* Search : Solr, Elastic Search, GSA
 
 Here is what others are saying about polyglot persistence:
 
@@ -36,13 +42,13 @@ Here is what others are saying about polyglot persistence:
 # How Does it work ? / Architecture
 
 
-# Installation
+## Installation
 
 Install oodebe package which is the core DPE engine
 
 npm install oodebe -g
 
-# Starting the server
+## Starting the server
 
 npm start oodebe -g
 
@@ -50,6 +56,6 @@ Verify if the server is started by hitting the following url
 
 http://<host>:3000/status
 
-# Stopping the server
+## Stopping the server
 
 http://<server_name>:3000/_shutdown
