@@ -38,10 +38,6 @@ Here is what others are saying about polyglot persistence:
 
 “Different databases are designed to solve different problems. Using a single database engine for all of the requirements usually leads to non-performant solutions” - Pramodkumar J Sadalage, Martin Fowler
 
-
-# Architecture
-
-
 ## Installation
 
 Install oodebe package which is the core DPE engine
