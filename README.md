@@ -39,7 +39,7 @@ Here is what others are saying about polyglot persistence:
 “Different databases are designed to solve different problems. Using a single database engine for all of the requirements usually leads to non-performant solutions” - Pramodkumar J Sadalage, Martin Fowler
 
 
-# How Does it work ? / Architecture
+# Architecture
 
 
 ## Installation
