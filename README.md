@@ -54,8 +54,8 @@ npm start oodebe -g
 
 Verify if the server is started by hitting the following url
 
-http://<host>:3000/status
+http://&lt;host&gt;:3000/status
 
 ## Stopping the server
 
-http://<server_name>:3000/_shutdown
+http://&lt;server_name&gt;:3000/_shutdown
