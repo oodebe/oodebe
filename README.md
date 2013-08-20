@@ -69,6 +69,12 @@ Verify if the server is started by hitting the following url
 
 ##Stopping the server
 
+From command line
+
+	npm stop oodebe -g
+	
+Or, by hitting the shutdown API
+	
 	http://<host>:3000/_shutdown
 
 #OODEBE Cluster Architecture
