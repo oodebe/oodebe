@@ -57,19 +57,19 @@ Having handled these challenges in various applications, we have created Oodebe 
 
 Install oodebe package which is the core oodebe engine
 
-npm install oodebe -g
+	npm install oodebe -g
 
 ##Starting the server
 
-npm start oodebe -g
+	npm start oodebe -g
 
 Verify if the server is started by hitting the following url
 
-http://&lt;host&gt;:3000/status
+	http://&lt;host&gt;:3000/status
 
 ##Stopping the server
 
-http://&lt;host&gt;:3000/_shutdown
+	http://&lt;host&gt;:3000/_shutdown
 
 #OODEBE Cluster Architecture
 
