@@ -1,4 +1,4 @@
-# oodebe
+# OODEBE
 
 polyglot persistence and indexing engine
 
