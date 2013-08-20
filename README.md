@@ -65,11 +65,11 @@ Install oodebe package which is the core oodebe engine
 
 Verify if the server is started by hitting the following url
 
-	http://&lt;host&gt;:3000/status
+	http://<host>:3000/status
 
 ##Stopping the server
 
-	http://&lt;host&gt;:3000/_shutdown
+	http://<host>:3000/_shutdown
 
 #OODEBE Cluster Architecture
 
