@@ -150,36 +150,31 @@ Processor.prototype.disable = function(event,controller) {
  * other data that needs to be written specific to the event
  */
 Processor.prototype.sendStatus = function(data) {
-	var self=this;
-	if (typeof data!="object") {
-		data={message:data};
+	var self = this;
+	if (typeof data != "object") {
+		data = {};
+		data.message = data;
 	}
-	var date=new Date();
-	data.time=date.getTime();
+	var date = new Date();
+	data.time = date.getTime();
 	if (self.lastTimeStamp) {
-		data.interval=data.time-self.lastTimeStamp;
+		data.interval = data.time-self.lastTimeStamp;
 	} else {
-		data.interval=0;
+		data.interval = 0;
 	}
 	if (!data.event) {
-		data.event='none';
+		data.event = 'INFO';
 	}
 	if (!data.numObjects) {
-		data.numObjects=0;
+		data.numObjects = 0;
 	}
-	self.lastTimeStamp=date.getTime();
-	data.tstamp=date.toISOString();
-	data.uuid=self.uuid;
-	data.className=self.className;
-	data.config=self.config;
-	data.query=self.queue.data;
+	self.lastTimeStamp = date.getTime();
+	data.tstamp = date.toISOString();
+	data.uuid = self.uuid;
+	data.className = self.className;
+	// data.config = self.config;
+	// data.query = self.queue.data;
 	self.queue.sendStatus(data);
-	// create a pipe separated string and add to log
-	//~ if (data.event=='done') { //Commented the following lines
-		//~ var logentry=data.tstamp+' | '+data.time+' | '+data.interval+ ' | '+data.className+' | '+data.uuid+' | '+
-		//~ JSON.stringify(data.config)+' | '+JSON.stringify(data.query)+'\n';
-		//~ self.queue.addLogEntry(logentry);
-	//~ }
 }
 //-----------------------------------------------------------
 // Exports - Class Constructor

@@ -10,7 +10,7 @@ var EventEmitter = require("events").EventEmitter;
  * Executes the constructor for Processor, and then
  * registers and enables handlers for 'init' and 'done' events of the queue
  */
-function Controller(config,queue,parent) {
+function Controller(config, queue, parent) {
 	var self=this;
 	// call constructor of Processor
 	Controller.super_.call(this,config,queue,parent);

@@ -1,89 +1,87 @@
-var util = require('util');
 var	fs = require("fs");
-var Controller=require('./Controller');
-var path = process.env.npm_package_config_plugins || './config';
 
-//-----------------------------------------------------------
-// Class Definition
-//-----------------------------------------------------------
-
-/* Logger
- * each instance represents a unique log file
- * filename: filename to write the log file
- * context: object containng method 'sendError'
- */
-function Logger(filename,logPath,uuid,context) {
-	// set context
-	if (context) {
-		self.context=context;
-	}
+/**
+* Each instance represents a unique log file
+* 
+* @class Logger
+* @constructor
+* @param {string} logKey log filename suffix
+*/
+function Logger(queue, logKey, logFileName) {
 	// set filename and open file
-	if(!this.openStream(filename,logPath,uuid)) {
-		this.success=false;
+	this.success = true;
+	if(!this.openStream(queue, logKey, logFileName)) {
+		this.success = false;
 	}
 }
 
-/* Class static variable for maintaining all stream handles
- *
- */
-Logger.streams={};
+/* Class static variable for maintaining all stream handles */
+Logger.streams = {};
 
-//-----------------------------------------------------------
-// Methods
-//-----------------------------------------------------------
-
-/* openStream
- * opens/creates the specified log file stream and saves the handle in the instance variable
- */
-Logger.prototype.openStream = function(filename,logPath,uuid) {
+/** 
+* opens/creates the specified log file stream and saves the handle in the instance variable
+* 
+* @method openStream
+* @param queue
+*/
+Logger.prototype.openStream = function(queue, logKey, logFileName) {
 	var self = this;
-	if (!filename) {
-		filename=this.filename;
-	}
-	if (!filename) {
-		return self.sendError("Unable to open log file. No filename specified");
-	}
-	self.filename=filename;
+	
+	// var filename = queue.operation.log[logKey];
+	var logPath = queue.logFolder;
+	var uuid = queue.uuid;
+	
+	// if (!filename) {
+		// return self.sendError("Unable to open log file. No filename specified");
+	// }
+	self.filename = logFileName;
+	
 	// check if an instance already exists for this filename
-	if (Logger.streams[filename]) {
-		self.stream=Logger.streams[filename];
-	} else {
-		var filePath = "";
-		
-		if(logPath.trim() == "") {
-			filePath = __dirname + '/logs/';
-			var exists = fs.existsSync(filePath);
-			if(!exists) {
-				try {
-					fs.mkdirSync(filePath, 0777);
-				} catch(e) {
-					console.log("Error creating default logs folder : " + e);
-					return false;
-				}
-			}
-		} else {
-			filePath = logPath;
-		}
-		
-		var filename = (uuid != undefined && uuid.trim() != "") ? uuid + "_" + self.filename : self.filename;
-		
-		console.log("Log files location : " + filePath + filename);
-		
-		self.stream=fs.createWriteStream(filePath+filename,{flags:'a+',mode:'777',encoding:'utf8'});
-		//~ self.stream=fs.createWriteStream(__dirname+'/logs/'+self.filename,{flags:'a+',mode:'777',encoding:'utf8'});
-		Logger.streams[self.filename]=self.stream;
-		self.stream.on('error',function(err) {
-			if (self.context && self.context.sendError) {
-				self.context.sendError("Log Error:"+err);
-			}
-		});
+	if (Logger.streams[self.filename]) {
+		var that = Logger.streams[self.filename];
+		that.closeStream();
 	}
+	
+	var filePath = queue.logFolder.trim();
+	
+	if(filePath == "") {
+		filePath = __dirname + '/logs/';
+		var exists = fs.existsSync(filePath);
+		if(!exists) {
+			try {
+				fs.mkdirSync(filePath, 0777);
+			} catch(e) {
+				console.log("Error AAAAAA creating default logs folder : " + e);
+				return false;
+			}
+		}
+		queue.logFolder = filePath;
+	}
+	
+	self.logFileLocation = filePath + logFileName;
+	
+	console.log(logKey + " log file location : " + filePath + logFileName);
+	
+	var logFile = filePath + logFileName;
+	if (fs.existsSync(logFile)) {
+		fs.unlinkSync(logFile);
+	}
+	
+	self.stream = fs.createWriteStream(logFile, {flags: 'a+', mode: '777', encoding: 'utf8'});
+	
+	Logger.streams[logKey] = self.stream;
+	self.stream.on('error', function(err) {
+		if (self.context && self.context.sendError) {
+			self.context.sendError("Log Error:"+err);
+		}
+	});
+	
 	return true;
 }
 
-/* writeLog
- * adds a new entry to the log file
- */
+/** writeLog
+* adds a new entry to the log file
+*/
 Logger.prototype.writeLog = function(logentry) {
 	var self=this;
 	if (!self.stream) {
@@ -93,25 +91,25 @@ Logger.prototype.writeLog = function(logentry) {
 	if (!self.stream) {
 		// still no handle... complain
 		if (self.context && self.context.sendError) {
-			return self.context.sendError("Unable to write to log file "+self.filename+" error opening file");
+			return self.context.sendError("Unable to write to log file " + self.filename + " error opening file");
 		}
 	}
 	// handle ok.. try and write to it
 	self.stream.write(logentry);
 }
 
-/* closeStream
- * closes the log file stream
- */
-function closeStream() {
+/**
+* closes the log file stream
+*
+* @method closeStream
+*/
+Logger.prototype.closeStream = function() {
+	var self = this;
 	if (self.stream) {
 		self.stream.end();
 	}
-	self.stream=null;
+	self.stream = null;
 }
 
-//-----------------------------------------------------------
-// Exports - Class Constructor
-//-----------------------------------------------------------
-
 module.exports = Logger;
+

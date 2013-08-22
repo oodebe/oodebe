@@ -1,172 +1,166 @@
-var plugins = process.env.npm_package_config_plugins || './config';
-
 var util = require('util');
-var config = require(plugins);
-var Controller=require('./Controller');
-var Logger=require('./Logger');
+var Controller = require('./Controller');
+var Logger = require('./Logger');
 var	fs = require("fs");
-require('date-utils');
 
-//-----------------------------------------------------------
-// Class Definition
-//-----------------------------------------------------------
+/**
+* Creates and execute an operation in the form of a sequence of task processors
+* creates the following instance variables in the queue object
+*
+* data: the input data to be processed 
+* config: the configuration containing models and processors
+* modelName: the name of the model on which the operation is to be performed, specified in data._op
+* operationName: the name of the operation that is to be performed, specified in data._op
+* model: the model configuration (extracted from config)
+* operation: the operation configuration (extracted from config)
+* controller: the instance of the controller class for the operation
+*
+* @class Queue
+* @constructor
+* @param {object} data The input data to be processed
+* @param {object} data._op The Mandatory key specifying the operation to be performed
+**/ 
 
-/* Queue class
- * Creates and execute an operation in the form of a sequence of task processors
- * The config folder contains definitions of operations and processors
- * The constructor takes two parameters:
- * - data: the input data to be processed
- *         this needs to be a hash containing mandatory keys:
- *         ._op - contains the operation to be performed. The format of this is model.operation,
- *                where model = the name of the model and operation = name of operation on the model
- * - context: containing context information that can be used by processsors
- * context contains the following keys:
- *	.request - contains the http request object (may not be required)
- *	.sendResponse - callback for sending a response to the caller, typically in the form of JSON data
- *	.endRequest - callback to end the operation
- *	.sendStatus	- callback to send a status message that can be used to monitor the progress of the operation
- * The contructor creates the following instance variables in the queue object:
- * - data: the input data to be processed 
- * - context: the context received from the caller
- * - config: the configuration containing models and processors
- * - modelName: the name of the model on which the operation is to be performed, specified in data._op
- * - operationName: the name of the operation that is to be performed, specified in data._op
- * - model: the model configuration (extracted from config)
- * - operation: the operation configuration (extracted from config)
- * - controller: the instance of the controller class for the operation
- * - processors: array of instances of the processors for the operation
- */ 
-
-function Queue(data,context) {
-	var self=this;
-	// call contructor of Controller
-    Queue.super_.call(this);
-	this.className='Queue';
-	// set instance variables
-	self.data=data;
-	self.context=context;
-	self.config=config;
+function Queue (data, response) {
+	var self = this;
+	
+	// call contructor of base class - Controller
+  Queue.super_.call(this);
+	 
+	self.className = 'Queue';
+	
+	// Initialize instance variables
+	self.data = data;
+	self.nodeID = data.nodeID;
+	self.reqID = data.reqID;
+	
+	// require plugins and store in self
+	var config = require(__pluginsdir);
+	self.config = config;
 	
 	// set a flag indicating that the API request is stil pending... 
 	// we can then automatically end the request if no child processor has already done so
-	self.requestPending=true;
-	// check data for operation requested, and look up the operation in registry, to find the processors mapped to the operation
-	if (!data['_op']) { // no operation requested
-		return self.sendError('No operation specified...ignoring request');
-	}
-	var op=data['_op'].split('.');
-	if (op.length<2) { // incorrect format for operation... should be model.operation
-		return self.sendError('Incorrect format of operation specified...needs to contain model.operation');
-	}
-	// based on specified operation, get model and operation
-	self.modelName = op[0];
+	self.requestPending = true;
 
-	if (Queue.pending) {
-		if (Queue.pending[self.modelName]) {
-			return self.showStatus('Model: ' + self.modelName + '\r\nProcess: ' + Queue.pending[self.modelName] + '\r\nStatus: ' + Queue.statusMessage);
-		}
+	
+	// based on specified operation, get model and operation
+	self.modelName = data.modelName;
+	self.operationName = data.operationName;
+	
+	self.model = config.models[self.modelName];
+	self.operation = self.model['operations'][self.operationName];
+	
+	if (data['jobID'] && data['jobID'].trim() != "") self.uuid = data['jobID'];
+	if (data['jobDate'] && data['jobDate'].trim() != "") {
+		self.jobDate = data['jobDate'];
 	} else {
-		Queue.pending = {};
+		var date = new Date();
+		self.jobDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
 	}
 	
-	self.operationName=op[1];
-	// check if valid model
-	if (!config.models[self.modelName]) { // not a valid model
-		return self.sendError('Invalid model '+self.modelName+' ... not found');
-	}
-	self.model=config.models[self.modelName];
-	// check if valid model definition
-	if (!self.model['operations']) {
-		return self.sendError('Invalid model definition '+self.modelName+'... no operations found in model');
-	}
-	// check if valid operation
-	if (!self.model['operations'][self.operationName]) {
-		return self.sendError('Invalid operation '+self.operationName+'... not found in model '+self.modelName);
-	}
-	self.operation=self.model['operations'][self.operationName];
-	// check if valid operation definition
-	if (!self.operation['type']) {
-		return self.sendError('Invalid operation definition '+self.modelName+'.'+self.operationName+'... no processor type specified');
-	}
-	// check if valid controller
-	if (!config.processors[self.operation['type']]) {
-		return self.sendError('Invalid processor '+self.operation['type']+' in '+self.modelName+'.'+self.operationName+'... not found in config');
-	}
+	
 	
 	// create an instance for the controller
-	self.controller=new config.processors[self.operation['type']](self.operation,self);
+	self.controller = new config.processors[self.operation['type']](self.operation,self);
+	
 	// enable and emit start event to start the controller
 	self.controller.enable('start');
 	
-	// check if the operation has a log file and create a logger
-	if (self.operation['log'] || 'filename' in data) {
-		self.logger ={};
-		var logPath = "";
+	self.logFolder = '';
+	// Create log directory
+	if(data['logFolderPath'] && data['logFolderPath'].trim() != "") {
+		var param = data['logFolderPath'];
+		param = param.replace(/[\/]$/, '').trim();
 		
-		if(data['logFolderPath'] != undefined && data['logFolderPath'].trim() != "") {
-			var param = data['logFolderPath'];
-			param = param.replace(/[\/]$/,'').trim();
-
-			if(param != "") {
-				try {
-					var exists = fs.lstatSync(param);
-					if(exists.isDirectory()) {
-						logPath = param + "/";
-					}
-				} catch (e) {
-					console.log('No such file or directory "' + param + '" exists...ignoring request');
-				}				
-			}
-		}
-		
-		var success = true;
-		
-		for(i in self.operation['log']) {
-			var filename = self.operation['log'][i] || data['filename'];
-			self.logger[i] = new Logger(filename, logPath, self.controller.uuid);
-			
-			if((self.logger[i].success != undefined) && !self.logger[i].success) {
-				success = false;
-				break;
-			}
-		}
-		
-		if(!success) {
-			return self.sendError('Error creating default log folder.');
+		if (param != "") {
+			try {
+				var exists = fs.lstatSync(param);
+				if(exists.isDirectory()) {
+					self.logFolder = param + "/";
+				}
+			} catch (e) {
+				console.log('No such file or directory "' + param + '" exists...');
+			}				
 		}
 	}
-	//~ // check if the operation has a log file and create a logger
-	//~ if (self.operation['log']) {
-		//~ self.logger = new Logger(self.operation['log']);
-	//~ }
 	
-	Queue.pending[self.modelName] = self.operationName;
+	// check if the operation has a log file and create a logger
+	self.logger = {};
+	self.logConfigs = {};		
+	var logFileName;
+
+	if (!self.operation['log']) {
+		self.operation['log'] = {};
+	}
+	var logs = self.operation['log'];
 	
-	self.emit('start',context);
+	for(var logKey in logs) {
+		logFileName = null;
+		
+		var prefix = '';
+		if (data[logKey] && data[logKey].trim() != '') {
+			logFileName = data[logKey];
+		} else {
+			prefix = self.uuid + "_" + self.jobDate + "_";
+			logFileName = logs[logKey];
+		}
+		
+		if (logFileName === '') {
+			return self.done({message: logKey + ' log file name is missing'});
+		}
+		
+		logFileName = prefix + logFileName;
+		
+		var logger = new Logger(self, logKey, logFileName);
+		self.logConfigs[logKey] = logger.logFileLocation;
+
+		if (!logger.success) {
+			return self.done({message: 'Error creating default log folder.'});
+		}
+		
+		self.logger[logKey] = logger;
+	}
+	
+	self.emit('start');
+	self.started = true;
+	self.status = 'Started';
+	self.exitCode = '0';
 }
 util.inherits(Queue, Controller);
 
-//-----------------------------------------------------------
-// Methods
-//-----------------------------------------------------------
-
-/*
- * done
- * event handler for 'done' event, emitted by the primary controller for the queue
- */
-Queue.prototype.done = function(data) {
-	var self=this;
-	self.endRequest();
-	if (Queue.pending[data.processor.queue.modelName]) {
-		delete Queue.pending[data.processor.queue.modelName];
+/**
+* event handler for 'done' event, emitted by the primary controller for the queue
+* 
+* @method done
+* @param {string} err.message message to be shown for the job terminated with error
+*/
+Queue.prototype.done = function(err) {
+	var self = this;
+	self.status = 'Completed';
+	self.started = false;
+	process.send({'cmd': '_delJob', data: {'jobID': self.uuid, pingMessage: 'status:' + self.status + ' \ncode:' + self.exitCode }});
+	
+	if (err && err.message) {
+		var msg = "Error in data:" + JSON.stringify(self.data) + " Error: " + err.message;
+		self.sendStatus(msg);
+		self.sendResponse(msg);
+	} else {
+		self.sendStatus({'event': 'DONE', 'message': 'completed'});
 	}
+	
+	
+	for (var key in self.logger) {
+		self.logger[key].closeStream();
+	}
+	
+	self.endRequest();
 }
 
 /*
  * sendError - sends an error response and ends the operation
  */
 Queue.prototype.sendError = function(message) {
-	var msg="Error in data:"+JSON.stringify(this.data)+" Error:"+message;
+	var msg = "Error in data:" + JSON.stringify(this.data) + " Error: " + message;
 	this.sendStatus(msg);
 	this.sendResponse(msg);
 	this.endRequest();
@@ -184,9 +178,10 @@ Queue.prototype.showStatus = function(message) {
  * can be called multiple times to return part data
  */
 Queue.prototype.sendResponse = function(data) {
+	var self = this;
 	// send http response
-	if (this.context.sendResponse) {
-		this.context.sendResponse(data);
+	if (data) {
+		process.send({'cmd': '_write', 'data': {'reqID': self.reqID, 'message': data}});
 	}
 }
 
@@ -195,12 +190,17 @@ Queue.prototype.sendResponse = function(data) {
  * typically used to monitor the operation execution
  */
 Queue.prototype.sendStatus = function(data) {
+	var self = this;
 	// send status message
-	if (this.context.sendStatus) {
-		if (data.msg) {
-			Queue.statusMessage = data.msg;
-			this.context.sendStatus(data);
-		}
+	data.jobID = self.uuid;
+	process.send({'cmd': '_status', 'data': data});
+}
+
+Queue.prototype.sendHTTPCode = function(code) {
+	var self = this;
+	// set status code
+	if (!isNaN(code)) {
+		process.send({'cmd': '_httpcode', 'data': {'reqID': self.reqID, 'code': code}});
 	}
 }
 
@@ -210,136 +210,18 @@ Queue.prototype.sendStatus = function(data) {
  * In some cases, e.g. in batch operations, the request is ended before the batch operation is completed
  */
 Queue.prototype.endRequest = function(data) {
-	// all processors done
-	if (this.context.endRequest && this.requestPending) {
-		this.requestPending=false;
-		this.context.endRequest(data);
+	var self = this;
+	
+	if (self.requestPending) {
+		self.requestPending = false;
+		process.send({'cmd': '_end', 'data': {'reqID': self.reqID, 'message': data}});
 	}
 }
 
-/*
- * addLogEntry - add a string to the log file
- */
-//~ Queue.prototype.addLogEntry = function(logentry) {
-	//~ if (this.logger) {
-		//~ this.logger.writeLog(logentry);
-	//~ }
-//~ }
-
-Queue.prototype.addLogEntry = function(logentry,key) {
-	//console.log(this.logger[key])
+Queue.prototype.addLogEntry = function(logentry, key) {
 	if (key in this.logger) {
 		this.logger[key].writeLog(logentry);
 	}
-}
-
-// Static variable locks
-Queue.locks = {};
-
-/*
- * setLock - sets a lock on the given object
- */
- 
-Queue.prototype.setLock = function(locker) {
-	var self = this;
-	var key;
-	
-	if (self.isLocked(locker)) return; // No need to do if any key required by locker is already locked, the isLocked has already added the callback
-	
-	for (lockType in locker.lockData) {
-		if (!Queue.locks[lockType]) Queue.locks[lockType] = {};
-		for (key in locker.lockData[lockType]) {
-			key = locker.lockData[lockType][key];
-			Queue.locks[lockType][key] = {
-				locked: true,
-				callbacks: []
-			};
-		}
-	}
-	locker.callback.call(locker); // Call the callback to let the locker proceed
-}
-
-/*
- * unsetLock - removes a lock on the given object
- */
- 
-Queue.prototype.unsetLock = function(unlocker) {
-	var self = this;
-	var i, key, callbacks, lockType, processor, processors = [];
-	
-	for (lockType in unlocker.lockData) {
-		if (Queue.locks[lockType]) {
-			for (key in unlocker.lockData[lockType]) {
-				key = unlocker.lockData[lockType][key];
-				if (Queue.locks[lockType][key]) {
-					Queue.locks[lockType][key].locked = false;;
-					callbacks = Queue.locks[lockType][key].callbacks;
-					processor = callbacks.shift();
-					if (processor) processors.push(processor);
-					if (callbacks.length == 0) delete Queue.locks[lockType][key];
-				}
-			}
-		}
-	}
-	
-	i = 0;
-	while (i < processors.length) {
-		if (!self.isLocked(processors[i])) processors[i].callback.call(processors[i]);
-		i += 1;
-	}
-}
-
-
-/*
- * isLocked - checks if a lock exists
- */
-
-Queue.prototype.isLocked = function(processor) {
-	var self = this;
-	var key, callbacks, lockType, locked = false;
-
-	for (lockType in processor.lockData) { // eg lockType = 'pfLock'
-		if (Queue.locks[lockType]) {
-			for (key in processor.lockData[lockType]) {
-				key = processor.lockData[lockType][key]; // eg key = 'PF1'
-				if (Queue.locks[lockType][key] && Queue.locks[lockType][key].locked) {
-					Queue.locks[lockType][key].callbacks.push(processor);	// if lock exists, Set callback
-					return true;
-				}
-			}
-		}
-	}
-	return locked;
-}
-
-Queue.prototype.sendMail = function (message) {
-	var self = this;
-	if (!message) {
-		console.log('No data was given to sendMail');
-		return;
-	}
-	
-	var server, email, config;
-	
-	email = require('emailjs');
-	config = self.model.config.email;
-	
-	if (config.name) {
-		message.from = config.name + ' <' + config.user + '>';
-	} else {
-		message.from = config.user;
-	}
-	if (!message.to) message.to = config.to;
-	if (!message.text) message.text = " ";
-	if (config.subjectPfx) {
-		message.subject = config.subjectPfx + ' - ' + message.subject;
-	}
-	
-	var server  = email.server.connect(config);
-	server.send(message, function (err, message) {
-		if (err) console.log (err);
-		// console.log (err || message);
-	});
 }
 
 //-----------------------------------------------------------
@@ -347,3 +229,4 @@ Queue.prototype.sendMail = function (message) {
 //-----------------------------------------------------------
  
 module.exports = Queue;
+
