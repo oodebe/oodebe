@@ -1,1 +1,0 @@
-module.exports = require(process.env.global_path + 'node_modules/requireindex')(__dirname);
