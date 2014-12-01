@@ -92,7 +92,7 @@ Each node must be replica of each other, and can receive and serve the requests.
 
 ##Internal Load balancer
 
-oodebe has built-in support for distributing the requests with its local workers as well as with other nodes within the same cluster. It shares the load in round robin fashion and tries to fill up all the local workers first. If no local workers have capacity to serve a particular request, the node delegates the request to one of the other nodes in the cluster. Hence, for that request, it acts as master keeps the clients connection alive until some node has replied to the request. In case no node in the cluster is able to serve the request, it responds back with the message ‚ÄúNo free workers found‚Äù. In this case the user can retry the request after a while.
+oodebe has built-in support for distributing the requests with its local workers as well as with other nodes within the same cluster. It shares the load in round robin fashion and tries to fill up all the local workers first. If no local workers have capacity to serve a particular request, the node delegates the request to one of the other nodes in the cluster. Hence, for that request, it acts as master keeps the clients connection alive until some node has replied to the request. In case no node in the cluster is able to serve the request, it responds back with the message ìNo free workers foundî. In this case the user can retry the request after a while.
 
 ##Failover
 
@@ -134,11 +134,11 @@ Can have different priority levels for different types of requests. Each priorit
 
 ###percent
 
-Percentage of total workers to be used to serve each priority group requests. for e.g. if total workers allocated are 4, and 50 percent of them are allowed to serve ‚Äòlow‚Äô priority requests then 2 workers will be forked for it.
+Percentage of total workers to be used to serve each priority group requests. for e.g. if total workers allocated are 4, and 50 percent of them are allowed to serve ëlowí priority requests then 2 workers will be forked for it.
 
 ###per_worker
 
-Number of concurrent request served by each of the workers, 0 (zero) means no limit, useful to serve high priority requests which can‚Äôt be rejected.
+Number of concurrent request served by each of the workers, 0 (zero) means no limit, useful to serve high priority requests which canít be rejected.
 
 ##API Model Configuration
 
@@ -184,7 +184,7 @@ Here is a sample API Model configuration:
 Operation contains the synchronization model for all the defined operations/process, which needs to be performed. It is used by oodebe base classes to initiate and start the controllers as defined in it.  
 
 ###priority
-It is used to define the ‚ÄòPriority level‚Äô of this operation as defined in server configuration. The operation will be executed by one of the assigned worker for that priority level. If left blank or value used is not defined in server configuration, oodebe will use default priority level (default would be the first priority level defined in the server-configuration) for this operation.   
+It is used to define the ëPriority levelí of this operation as defined in server configuration. The operation will be executed by one of the assigned worker for that priority level. If left blank or value used is not defined in server configuration, oodebe will use default priority level (default would be the first priority level defined in the server-configuration) for this operation.   
 
 ###type
 Type defines the class which needs to be invoked at that particular level by oodebe based on the synchronization required for that operation.

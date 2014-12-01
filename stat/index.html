@@ -1,6 +1,6 @@
 <html>
 <head>
-<script src="/stat/socket.io.js"></script>
+<script src="/stat/socket.io.min.js"></script>
 <script src="/stat/jq.js"></script>
 <style>
 #status {
@@ -11,8 +11,8 @@
 }
 pre {
 	border: 1px solid #999;
-	height: 300px;
-	width: 400px;
+	min-height: 300px;
+	width: 800px;
 	overflow: auto;
 	border-radius: 5px;
 	padding: 2px;
@@ -28,36 +28,44 @@ pre b {
 }
 </style>
 <script>
-	var div, boxes = {};
+	var div, boxes = {}, pre;
+	
 	$(document).ready(function () {
+		
 		div = $('#status')[0];
+		var socket = io.connect();
+		
+		socket.on('status', statusHandler);
+		socket.on('disconnect', function () {
+			pre.appendChild(document.createTextNode('Disconnected...\r\n'));
+		});
+		
 	});
 	
-	var socket = io.connect();
-	socket.on('status', function (data) {
-		var jobID = data.jobID || 'INFO';
-		var pre;
+	function statusHandler (data) {
+		var jobID = data.jobID || 'STATUS';
 		if (!boxes[jobID]) {
 			pre = document.createElement('pre');
 			pre.id = jobID;
 			div.appendChild(pre);
 			var b = document.createElement('b');
-			b.innerHTML = data.from + ' - ' + jobID;
+			// b.innerHTML = data.from + ' - ' + jobID;
+			b.innerHTML = 'OODEBE Status Tracker';
 			pre.appendChild(b);
 			boxes[jobID] = pre;
 		} else {
 			pre = boxes[jobID];
 		}
 		var str = '';
-		console.log(data)
-		str += (data.className || '') + ': ' + (data.message || '') + '\r\n';	
+		
+		str += (data.message || '') + '\r\n';	
 		pre.appendChild(document.createTextNode(str));
 		pre.scrollTop = pre.scrollHeight;
-	});
+	}
 </script>
 </head>
 <body>
-	<h1>Oodebe Status Tracker</h1>
+	<!-- <h1></h1> -->
 	<div id="status"></div>
 </body>
  

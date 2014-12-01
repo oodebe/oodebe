@@ -127,9 +127,9 @@ Processor.prototype.enable = function(event,handler,controller) {
  * and resets the enabled flag for the event
  */
 Processor.prototype.disable = function(event,controller) {
-	var self=this;
+	var self = this;
 	if (!controller) {
-		controller=self.parent;
+		controller = self.parent;
 	}
 	// if no controller, nothing to do
 	if (!controller || !controller.uuid) return;
@@ -155,25 +155,6 @@ Processor.prototype.sendStatus = function(data) {
 		data = {};
 		data.message = data;
 	}
-	var date = new Date();
-	data.time = date.getTime();
-	if (self.lastTimeStamp) {
-		data.interval = data.time-self.lastTimeStamp;
-	} else {
-		data.interval = 0;
-	}
-	if (!data.event) {
-		data.event = 'INFO';
-	}
-	if (!data.numObjects) {
-		data.numObjects = 0;
-	}
-	self.lastTimeStamp = date.getTime();
-	data.tstamp = date.toISOString();
-	data.uuid = self.uuid;
-	data.className = self.className;
-	// data.config = self.config;
-	// data.query = self.queue.data;
 	self.queue.sendStatus(data);
 }
 //-----------------------------------------------------------

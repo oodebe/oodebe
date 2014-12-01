@@ -58,7 +58,7 @@ function Queue (data, response) {
 		self.jobDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
 	}
 	
-	
+	cluster.log({type: 'INFO', message: 'JOB ID=' + self.uuid + ',URL=' + self.data.url + ',MSG=Started processing the request', opr: 'SYSTEM'});
 	
 	// create an instance for the controller
 	self.controller = new config.processors[self.operation['type']](self.operation,self);
@@ -88,34 +88,47 @@ function Queue (data, response) {
 	self.logger = {};
 	self.logConfigs = {};		
 	var logFileName;
+	
+	// self.logger[logKey] = new Logger(self, 'out', 'out.log');
 
 	if (!self.operation['log']) {
 		self.operation['log'] = {};
 	}
 	var logs = self.operation['log'];
+	var logFiles = {};
 	
 	for(var logKey in logs) {
 		logFileName = null;
 		
-		var prefix = '';
 		if (data[logKey] && data[logKey].trim() != '') {
 			logFileName = data[logKey];
 		} else {
-			prefix = self.uuid + "_" + self.jobDate + "_";
 			logFileName = logs[logKey];
+			logFileName = logFileName.replace('{{jobID}}', self.uuid);
+			logFileName = logFileName.replace('{{jobDate}}', self.jobDate);
 		}
 		
 		if (logFileName === '') {
-			return self.done({message: logKey + ' log file name is missing'});
+			self.done({message: logKey + ' log file name is missing'});
+			return;
 		}
 		
-		logFileName = prefix + logFileName;
+		var regex = /^[a-z0-9]+?([\w\-. ]+?[a-z])?$/i;
+		if(!regex.test(logFileName)) {
+			self.done({message: logKey + ' log file name "' + logFileName + '" is not a valid filename'});
+			return;
+		}
 		
-		var logger = new Logger(self, logKey, logFileName);
-		self.logConfigs[logKey] = logger.logFileLocation;
+		logFiles[logKey] = logFileName;
+	}
 
+	for(var logKey in logFiles) {
+		var logger = new Logger(self, logKey, logFiles[logKey]);
+		self.logConfigs[logKey] = logger.logFileLocation;
+		
 		if (!logger.success) {
-			return self.done({message: 'Error creating default log folder.'});
+			self.done({message: 'Error creating default log folder.'});
+			return;
 		}
 		
 		self.logger[logKey] = logger;
@@ -136,9 +149,25 @@ util.inherits(Queue, Controller);
 */
 Queue.prototype.done = function(err) {
 	var self = this;
-	self.status = 'Completed';
 	self.started = false;
-	process.send({'cmd': '_delJob', data: {'jobID': self.uuid, pingMessage: 'status:' + self.status + ' \ncode:' + self.exitCode }});
+	
+	var str = '\n';
+	if (self.logConfigs) {
+		for (var key in self.logConfigs) {
+			str += key + '_log: ' + self.logConfigs[key] + '\n'
+		}
+	}
+	
+	var msgstr = '';
+	if (self.abort) {
+		self.status = 'Aborted';
+		msgstr = 'Aborted processing the request';
+	} else {
+		self.status = 'Completed';
+		msgstr = 'Completed processing the request';
+	}
+	cluster.log({type: 'INFO', message: 'JOB ID=' + self.uuid + ',URL=' + self.data.url + ',MSG=' + msgstr, opr: 'SYSTEM'});
+	process.send({'cmd': '_delJob', data: {'jobID': self.uuid, pingMessage: 'status:' + self.status + ' \ncode:' + self.exitCode + str}});
 	
 	if (err && err.message) {
 		var msg = "Error in data:" + JSON.stringify(self.data) + " Error: " + err.message;
@@ -147,7 +176,6 @@ Queue.prototype.done = function(err) {
 	} else {
 		self.sendStatus({'event': 'DONE', 'message': 'completed'});
 	}
-	
 	
 	for (var key in self.logger) {
 		self.logger[key].closeStream();
@@ -193,7 +221,7 @@ Queue.prototype.sendStatus = function(data) {
 	var self = this;
 	// send status message
 	data.jobID = self.uuid;
-	process.send({'cmd': '_status', 'data': data});
+	cluster.log(data);
 }
 
 Queue.prototype.sendHTTPCode = function(code) {
@@ -229,4 +257,3 @@ Queue.prototype.addLogEntry = function(logentry, key) {
 //-----------------------------------------------------------
  
 module.exports = Queue;
-

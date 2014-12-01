@@ -1,25 +1,23 @@
-var http = require('http'),
-		child_process = require('child_process'),
-		config = require('./cluster_config.js');
-		packageJson = require('./package.json')
-		;
+var child_process = require('child_process')
+var cluster       = require('./cluster_config.js')
+var packageJson   = require('./package.json')
+var timeout       = false
+var error         = false;
+var client        = cluster.ssl.enabled ? require('https') : require('http');
 
 const PING_TIMEOUT = 3000;
-
 GLOBAL.__port = process.env.npm_package_config_port || 3000;
 
-var timeout = false;
-var error = false;
-var data = '';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
 
 var options = {
-	hostname: '127.0.0.1',
-	port: config.port,
-	path: '/status',
-	method: 'GET'
+	hostname : '127.0.0.1',
+	port     : cluster.port,
+	path     : '/status',
+	method   : 'GET'
 }
 
-var req = http.request(options, function(res) {
+var req = client.request(options, function(res) {
 	var body = '';
   
 	res.setEncoding('utf8');
@@ -37,7 +35,6 @@ var req = http.request(options, function(res) {
 			console.log('OODEBE server not started...');
 		}
 	});
-	
 });
 
 req.setTimeout(PING_TIMEOUT, function () {
@@ -59,16 +56,21 @@ req.end();
 
 function init(err, data) {
 	if (data && data.name == packageJson.name) {
-		console.log('Stopping OODEBE server (' + data.pid + ')');
-		try {
-			process.kill(data.pid);	// Need to implement c graceful shutdown. stop listening, but die after current operation.
-			console.log('Done!');
-		} catch (err) {
-			if (err.code == 'ESRCH') {
-				console.log('OODEBE server already stopped, please check logs for more information...');
-			} else {
-				console.log('Error shutting down OODEBE server...');
-			}
-		}
+		process.stdout.write('Stopping OODEBE server (' + data.pid + ')');
+		// Need to implement c graceful shutdown. stop listening, but die after current operation.
+		options.path = '/_shutdown';
+		var req = client.request(options, function(res) {
+			res.on('data', function (chunk) { });
+			res.on('end', function () { });
+
+			process.stdout.write('\tDone!\r\n');
+		});
+
+		req.on('error', function(err) {
+			console.log(err)
+			console.log('Error shutting down OODEBE server...');
+		});
+		
+		req.end();
 	}
 }

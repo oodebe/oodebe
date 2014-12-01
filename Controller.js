@@ -33,8 +33,12 @@ util.inherits(Controller,Processor);
  * emit(event,data)
  * Emit an event on the event bus for this controller
  */
- Controller.prototype.emit = function(event,data) {
-	this.bus.emit(event,data);
+Controller.prototype.emit = function(event,data) {
+	var self = this;
+	
+	process.nextTick(function () {
+		self.bus.emit(event,data);
+	});
 }
  
 /*

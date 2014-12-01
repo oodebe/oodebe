@@ -4,10 +4,10 @@
     "email": "oodebe@reach1to1.com"
   },
   "name": "oodebe",
-  "description": "DPE",
+  "description": "Polyglot Persistence and Indexing Engine",
   "homepage": "",
   "bugs": "",
-  "version": "0.1.11",
+  "version": "0.1.13",
   "main": "oodebe.js",
   "repository": {
     "type": "",
@@ -26,7 +26,7 @@
 		"redis"
   ],
   "readme": "#OODEBE",
-  "_id": "oodebe@0.1.11",
+  "_id": "oodebe@0.1.13",
   "_from": "oodebe@",
   "preferGlobal": "true",
   "scripts": {

@@ -51,26 +51,31 @@ Logger.prototype.openStream = function(queue, logKey, logFileName) {
 			try {
 				fs.mkdirSync(filePath, 0777);
 			} catch(e) {
-				console.log("Error AAAAAA creating default logs folder : " + e);
+				console.log("Error creating default logs folder : " + e);
 				return false;
 			}
 		}
 		queue.logFolder = filePath;
 	}
 	
-	self.logFileLocation = filePath + logFileName;
-	
-	console.log(logKey + " log file location : " + filePath + logFileName);
-	
 	var logFile = filePath + logFileName;
-	if (fs.existsSync(logFile)) {
-		fs.unlinkSync(logFile);
-	}
+	
+	console.log(logKey + " log file location : " + logFile);
+	self.logFileLocation = logFile;
+	
+	//~ if (fs.existsSync(logFile)) {
+		//~ try {
+			//~ fs.unlinkSync(logFile);
+		//~ } catch (err) {
+			//~ console.log(err.syscall + ' - ' + err.message);
+		//~ }
+	//~ }
 	
 	self.stream = fs.createWriteStream(logFile, {flags: 'a+', mode: '777', encoding: 'utf8'});
 	
 	Logger.streams[logKey] = self.stream;
 	self.stream.on('error', function(err) {
+		console.log(err)
 		if (self.context && self.context.sendError) {
 			self.context.sendError("Log Error:"+err);
 		}
@@ -106,7 +111,11 @@ Logger.prototype.writeLog = function(logentry) {
 Logger.prototype.closeStream = function() {
 	var self = this;
 	if (self.stream) {
-		self.stream.end();
+		try {
+			self.stream.end();
+		} catch (err) {
+			console.log('Error closing stream');
+		}
 	}
 	self.stream = null;
 }
