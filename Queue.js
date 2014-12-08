@@ -232,6 +232,14 @@ Queue.prototype.sendHTTPCode = function(code) {
 	}
 }
 
+Queue.prototype.sendHTTPHeader = function(data) {
+	var self = this;
+	// set status code
+	if (data) {
+		process.send({'cmd': '_httpheader', 'data': {'reqID': self.reqID, 'headers': data}});
+	}
+}
+
 /*
  * endRequest - call the callback to end the request
  * Note that this can be called at any time, and not necessarily after the requested operation is completed

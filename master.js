@@ -241,6 +241,17 @@ var ipcHandlers = {
 		var res = cluster.requests[reqID].res;
 		res.statusCode = data.code;
 	},
+
+	'_httpheader': function (data) {
+		var reqID = data.reqID
+		
+		var res = cluster.requests[reqID].res;
+		for(var key in data.headers) {
+			if(data.headers[key] !== null && typeof data.headers[key] === "string" && data.headers[key].trim() !== "") {
+				res.setHeader(key, data.headers[key]);
+			}
+		}
+	},
 	
 	'_end': function (data) {
 		var reqID = data.reqID;
@@ -527,6 +538,7 @@ function _initRequest(req, res, data) {
 	query.url = cluster.protocol + '://' + req.headers.host + req.url;
 	query.reqID = req.id;
 	query.priority = operation.priority;
+	query.headers = req.headers;
 	
 	var served = false;
 	for (var i = 0; i < workers.length; i += 1) {
