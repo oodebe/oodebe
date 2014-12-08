@@ -7,7 +7,7 @@
   "description": "Polyglot Persistence and Indexing Engine",
   "homepage": "",
   "bugs": "",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "main": "oodebe.js",
   "repository": {
     "type": "",
@@ -26,7 +26,7 @@
 		"redis"
   ],
   "readme": "#OODEBE",
-  "_id": "oodebe@0.1.13",
+  "_id": "oodebe@0.1.14",
   "_from": "oodebe@",
   "preferGlobal": "true",
   "scripts": {
