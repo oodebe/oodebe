@@ -433,7 +433,8 @@ function router (req, res, next) {
 		req.on('end', function () {
 			// Can check request header and decide if the POSTed data is in JSON or querystring
 			// var data = JSON.stringify(body);
-			var data = qs.parse(body);
+			// var data = qs.parse(body);
+			var data = JSON.parse(body);
 			_initRequest(req, res, data);
 		});
 	}
