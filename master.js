@@ -387,6 +387,7 @@ var app = connect()
 	.use('/_killjob', requestHandlers._killjob)
 	.use('/_shutdown', requestHandlers._shutdown)
 	.use('/_reload', requestHandlers._reload)
+	.use(allowCrossDomain)
 	.use('/', router)
 
 	if (cluster.ssl.enabled) {
@@ -412,6 +413,14 @@ io.sockets.on('connection', function (socket) {
 	socket.emit('status', { from: '[SERVER]', message: 'Connected...' });
 });
 
+function allowCrossDomain(req, res, next) {
+	res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
+	res.setHeader("Access-Control-Allow-Credentials", true);
+	res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Authorization, Cookie, Authentication");
+	res.setHeader("Content-Type", req.headers.accept);
+	next();
+}
+
 function router (req, res, next) {	
 	var accept = req.headers.accept || '';
 	
@@ -434,7 +443,7 @@ function router (req, res, next) {
 			// Can check request header and decide if the POSTed data is in JSON or querystring
 			// var data = JSON.stringify(body);
 			// var data = qs.parse(body);
-			var data = JSON.parse(body);
+			var data = (body.trim() !== '') ? JSON.parse(body) : '';
 			_initRequest(req, res, data);
 		});
 	}
